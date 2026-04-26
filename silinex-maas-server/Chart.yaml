@@ -1,0 +1,6 @@
+apiVersion: v2
+name: silinex-maas-server
+description: A Helm chart for Silinex MaaS backend server and init job
+type: application
+version: 0.1.0
+appVersion: "amd64-62195d6a-20260426-1742"

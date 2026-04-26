@@ -17,18 +17,19 @@ Logto Helm Chart
 访问
 ----
 
-App:   http://10.60.30.101:31301
-Admin: http://10.60.30.101:31302
+App:   http://10.60.30.120:31301
+Admin: http://10.60.30.120:31302
 
 主要默认配置
 ------------
 
-镜像: 10.191.59.7:35000/logto:1.28.0
-DB:   postgres://postgres:postgres123@10.60.30.101:17032/maas_idp_test
+Logto 镜像: registry.inner.silinex.work/silinex-maas/logto:1.28.0-amd64
+
+Logto DB: postgres://postgres:postgres123@10.60.30.101:17032/maas_idp_test
 
 Service 使用 NodePort:
-- app:   31301 -> 16001
-- admin: 31302 -> 16002
+- logto app:   31301 -> 16001
+- logto admin: 31302 -> 16002
 
 验证
 ----

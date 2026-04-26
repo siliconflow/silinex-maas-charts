@@ -1,0 +1,140 @@
+image:
+  repository: registry.inner.silinex.work/silinex-maas/silinex-maas-server
+  tag: "amd64-62195d6a-20260426-1742"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podSecurityContext: {}
+securityContext: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+hostAliases: []
+
+postgres:
+  host: 10.60.30.101
+  port: 17032
+  user: postgres
+  password: postgres123
+  sslmode: disable
+  timezone: Asia/Shanghai
+  serverDatabase: silinex_maas
+  logtoDatabase: maas_idp_test
+  serverDsnOverride: ""
+  logtoManagementDsnOverride: ""
+
+redis:
+  mode: single
+  addr: 10.60.30.101:17111
+  username: ""
+  password: redis123
+  db: 1
+  sentinelAddrs:
+    - 10.60.30.101:17119
+    - 10.60.30.102:17119
+    - 10.60.30.103:17119
+  sentinelMasterName: ""
+  sentinelUsername: ""
+  sentinelPassword: redis123
+
+logto:
+  managementEndpoint: http://logto:16001
+  managementAppId: 4moulpb7bk44zowv0o24a
+  managementAppSecret: ZqWEauPAL0ICnbxKAzW8avSvJTtXHYDu
+
+config:
+  env: dev
+  serverHost: 0.0.0.0
+  serverPort: 16100
+  serverSelfHost: https://maas.gz.xxxxxxxx.com
+  jwtMaxAge: "360000"
+  enableScheduler: true
+  debugEnableFakeLogin: false
+  enablePrettyConsole: true
+  modelManagerEndpoint: http://10.191.234.5:31602
+  modelManagerDefaultOrgId: silinex
+  shareDataPVName: pv-nfs
+  shareDataStorageClassName: nfs-csi
+  shareDataMountPath: /data/models
+  shareDataNfsServer: 10.191.59.2
+  shareDataNfsShare: /data-models
+  volumeModelHostPath: /maasjfs
+  shareDataMountPat: /data/models
+  prometheusEndpoint: http://prometheus:9090
+  k8sResourceNameTemplateSuffix: ""
+  pocTemp: false
+  adminOrgId: "1"
+  appNormalUserRoleIds: "2,3"
+  appManagerUserRoleIds: "1"
+  adminUserRoleIds: "4"
+  foo: BAR
+  extraEnv: {}
+
+secrets:
+  create: true
+  name: ""
+  existingSecret: ""
+  serverSessionSecret: asaddjhk12g309123jkabasdkjghsd
+  jwtKey: as13kjhgscv!@sxoiuy
+  appJwtSecret: 72bc230132092e40d478adbbba8db1996ce47159f7ed05810097250306814764e9298ec2b8406ce71a71f3a5636db83e563113d4ec8ac0e5c3bd35e793486fe9
+  appJwtCookiesName: silinex-maas
+  adminJwtSecret: 72bc230132092e40d478adbbba8db1996ce47159f7ed05810097250306814764e9298ec2b8406ce71a71f3a5636db83e563113d4ec8ac0e5c3bd35e793486fe9
+  adminJwtCookiesName: silinex-maas
+  extraStringData: {}
+
+initJob:
+  enabled: true
+  name: silinex-maas-server-init
+  annotations: {}
+  labels: {}
+  podAnnotations: {}
+  podLabels: {}
+  command: []
+  argsOverride: []
+  adminUsername: maasadmin
+  adminPassword: 2g8A64kBY5E5xR
+  autoMigrate: true
+  restartPolicy: Never
+  backoffLimit: 6
+  ttlSecondsAfterFinished: null
+  extraEnv: []
+  resources: {}
+
+server:
+  enabled: true
+  name: silinex-maas-server
+  replicaCount: 1
+  annotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  command: []
+  args:
+    - -mode
+    - server
+  extraEnv: []
+  service:
+    type: ClusterIP
+    port: 16100
+  livenessProbe:
+    enabled: true
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 6
+  readinessProbe:
+    enabled: true
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  resources: {}

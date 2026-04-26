@@ -1,0 +1,89 @@
+{{- if .Values.initJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "silinex-maas-server.initJobName" . }}
+  labels:
+    {{- include "silinex-maas-server.labels" . | nindent 4 }}
+    app.kubernetes.io/component: init
+    {{- with .Values.initJob.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.initJob.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  backoffLimit: {{ .Values.initJob.backoffLimit }}
+  {{- with .Values.initJob.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ . }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "silinex-maas-server.initSelectorLabels" . | nindent 8 }}
+        {{- with .Values.initJob.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.initJob.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "silinex-maas-server.serviceAccountName" . }}
+      restartPolicy: {{ .Values.initJob.restartPolicy }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: silinex-maas-server-init
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.initJob.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          args:
+            {{- if .Values.initJob.argsOverride }}
+            {{- toYaml .Values.initJob.argsOverride | nindent 12 }}
+            {{- else }}
+            - -mode
+            - init
+            - -admin-username
+            - {{ .Values.initJob.adminUsername | toString | quote }}
+            - -admin-password
+            - {{ .Values.initJob.adminPassword | toString | quote }}
+            - -auto-migrate
+            - {{ .Values.initJob.autoMigrate | toString | quote }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "silinex-maas-server.secretName" . }}
+          {{- with .Values.initJob.extraEnv }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.initJob.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

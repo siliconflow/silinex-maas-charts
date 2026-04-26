@@ -1,0 +1,13 @@
+Silinex MaaS backend has been deployed.
+
+Server service:
+  kubectl get svc {{ include "silinex-maas-server.serverName" . }}
+
+Init job:
+  kubectl get job {{ include "silinex-maas-server.initJobName" . }}
+
+Important install parameters:
+  --set postgres.serverDatabase=<backend-db>
+  --set postgres.logtoDatabase=<logto-db>
+  --set redis.db=<backend-redis-db>
+  --set logto.managementEndpoint=http://logto:16001
