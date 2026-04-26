@@ -1,0 +1,59 @@
+replicaCount: 1
+
+image:
+  repository: registry.inner.silinex.work/silinex-maas/e-maas-docs
+  tag: "amd64-57cdac93-20260426-1831"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+nodeSelector:
+  kubernetes.io/hostname: dev-vm-120
+tolerations: []
+affinity: {}
+hostAliases: []
+
+service:
+  type: ClusterIP
+  port: 16103
+  nodePort: ""
+
+config:
+  NODE_ENV: production
+  API_URL: https://10.60.30.120:31300
+  PORT: "16103"
+  extraEnv: {}
+
+extraEnv: []
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /documents/api/health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /documents/api/health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+resources: {}

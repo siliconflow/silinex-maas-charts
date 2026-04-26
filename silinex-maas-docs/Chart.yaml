@@ -1,0 +1,6 @@
+apiVersion: v2
+name: silinex-maas-docs
+description: A Helm chart for Silinex MaaS docs
+type: application
+version: 0.1.0
+appVersion: "amd64-57cdac93-20260426-1831"

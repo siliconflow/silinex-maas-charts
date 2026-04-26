@@ -1,0 +1,9 @@
+Silinex MaaS frontend has been deployed.
+
+Service:
+  kubectl get svc {{ include "silinex-maas-frontend.fullname" . }}
+
+Important parameters:
+  --set config.BASE_URL=https://10.60.30.120:31300/silinex
+  --set config.AUTH_CALLBACK_URL=https://10.60.30.120:31300
+  --set config.LOGTO_ENDPOINT=https://10.60.30.120:31301/

@@ -7,6 +7,13 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+    - name: aggregate-https
+      port: {{ .Values.service.ports.aggregateHttps }}
+      targetPort: aggregate-https
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePorts.aggregateHttps }}
+      nodePort: {{ .Values.service.nodePorts.aggregateHttps }}
+      {{- end }}
     - name: app-https
       port: {{ .Values.service.ports.appHttps }}
       targetPort: app-https

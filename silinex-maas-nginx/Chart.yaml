@@ -1,6 +1,6 @@
 apiVersion: v2
 name: silinex-maas-nginx
-description: A dedicated HTTPS nginx proxy for Silinex MaaS Logto endpoints
+description: A dedicated HTTPS nginx proxy for Silinex MaaS services
 type: application
 version: 0.1.0
-appVersion: "1.27-alpine"
+appVersion: "1.28.3-alpine-perl"

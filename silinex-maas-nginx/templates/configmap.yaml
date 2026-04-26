@@ -6,12 +6,109 @@ metadata:
     {{- include "silinex-maas-nginx.labels" . | nindent 4 }}
 data:
   default.conf: |
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' close;
+    }
+
+    upstream silinex_maas_api {
+        server {{ .Values.upstreams.maasApi.host }}:{{ .Values.upstreams.maasApi.port }};
+        keepalive {{ .Values.upstreams.maasApi.keepalive }};
+    }
+
+    upstream silinex_maas_server {
+        server {{ .Values.upstreams.maasServer.host }}:{{ .Values.upstreams.maasServer.port }};
+    }
+
+    upstream silinex_maas_frontend {
+        server {{ .Values.upstreams.maasFrontend.host }}:{{ .Values.upstreams.maasFrontend.port }};
+    }
+
+    upstream silinex_maas_docs {
+        server {{ .Values.upstreams.maasDocs.host }}:{{ .Values.upstreams.maasDocs.port }};
+    }
+
     upstream logto_app {
         server {{ .Values.upstreams.logtoApp.host }}:{{ .Values.upstreams.logtoApp.port }};
     }
 
     upstream logto_admin {
         server {{ .Values.upstreams.logtoAdmin.host }}:{{ .Values.upstreams.logtoAdmin.port }};
+    }
+
+    server {
+        listen {{ .Values.nginx.containerPorts.aggregateHttps }} ssl;
+        server_name {{ .Values.nginx.serverName }} _;
+
+        ssl_certificate /etc/nginx/ssl/tls.crt;
+        ssl_certificate_key /etc/nginx/ssl/tls.key;
+        ssl_protocols {{ .Values.nginx.sslProtocols }};
+        ssl_ciphers {{ .Values.nginx.sslCiphers }};
+        ssl_prefer_server_ciphers on;
+
+        client_max_body_size {{ .Values.nginx.clientMaxBodySize }};
+
+        location ^~ /v1/ {
+            proxy_pass http://silinex_maas_api;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port {{ .Values.service.nodePorts.aggregateHttps | default .Values.service.ports.aggregateHttps }};
+            proxy_buffering off;
+            proxy_read_timeout {{ .Values.nginx.longProxyReadTimeout }};
+            proxy_connect_timeout {{ .Values.nginx.proxyConnectTimeout }};
+            proxy_send_timeout {{ .Values.nginx.proxySendTimeout }};
+        }
+
+        location ^~ /silinex/ {
+            proxy_pass http://silinex_maas_server;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port {{ .Values.service.nodePorts.aggregateHttps | default .Values.service.ports.aggregateHttps }};
+            proxy_buffering off;
+            proxy_read_timeout {{ .Values.nginx.longProxyReadTimeout }};
+            proxy_connect_timeout {{ .Values.nginx.proxyConnectTimeout }};
+            proxy_send_timeout {{ .Values.nginx.proxySendTimeout }};
+        }
+
+        location ^~ /documents {
+            proxy_pass http://silinex_maas_docs;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port {{ .Values.service.nodePorts.aggregateHttps | default .Values.service.ports.aggregateHttps }};
+            proxy_read_timeout {{ .Values.nginx.proxyReadTimeout }};
+            proxy_send_timeout {{ .Values.nginx.proxySendTimeout }};
+        }
+
+        location / {
+            proxy_pass http://silinex_maas_frontend;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port {{ .Values.service.nodePorts.aggregateHttps | default .Values.service.ports.aggregateHttps }};
+            proxy_read_timeout {{ .Values.nginx.proxyReadTimeout }};
+            proxy_send_timeout {{ .Values.nginx.proxySendTimeout }};
+        }
     }
 
     server {

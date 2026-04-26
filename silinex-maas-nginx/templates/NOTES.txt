@@ -1,5 +1,14 @@
 Silinex MaaS nginx HTTPS proxy has been deployed.
 
+MaaS aggregate entry:
+  https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.aggregateHttps }}
+
+Routes:
+  /v1/       -> http://{{ .Values.upstreams.maasApi.host }}:{{ .Values.upstreams.maasApi.port }}
+  /silinex/  -> http://{{ .Values.upstreams.maasServer.host }}:{{ .Values.upstreams.maasServer.port }}
+  /documents -> http://{{ .Values.upstreams.maasDocs.host }}:{{ .Values.upstreams.maasDocs.port }}
+  /          -> http://{{ .Values.upstreams.maasFrontend.host }}:{{ .Values.upstreams.maasFrontend.port }}
+
 Logto app:
   https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.appHttps }}
 

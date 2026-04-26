@@ -20,9 +20,11 @@ securityContext: {}
 service:
   type: NodePort
   ports:
+    aggregateHttps: 31300
     appHttps: 31301
     adminHttps: 31302
   nodePorts:
+    aggregateHttps: 31300
     appHttps: 31301
     adminHttps: 31302
 
@@ -32,12 +34,28 @@ nginx:
   sslCiphers: "HIGH:!aNULL:!MD5"
   proxyReadTimeout: "300s"
   proxySendTimeout: "300s"
+  proxyConnectTimeout: "1h"
+  longProxyReadTimeout: "24h"
   clientMaxBodySize: "50m"
   containerPorts:
+    aggregateHttps: 31300
     appHttps: 31301
     adminHttps: 31302
 
 upstreams:
+  maasApi:
+    host: silinex-maas-server
+    port: 16100
+    keepalive: 8192
+  maasServer:
+    host: silinex-maas-server
+    port: 16100
+  maasFrontend:
+    host: silinex-maas-frontend
+    port: 16101
+  maasDocs:
+    host: silinex-maas-docs
+    port: 16103
   logtoApp:
     host: logto
     port: 16001

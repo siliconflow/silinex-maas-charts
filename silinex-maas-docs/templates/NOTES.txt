@@ -1,0 +1,7 @@
+Silinex MaaS docs has been deployed.
+
+Service:
+  kubectl get svc {{ include "silinex-maas-docs.fullname" . }}
+
+Important parameters:
+  --set config.API_URL=https://10.60.30.120:31300

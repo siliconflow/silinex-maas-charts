@@ -1,0 +1,95 @@
+replicaCount: 1
+
+image:
+  repository: registry.inner.silinex.work/silinex-maas/e-maas
+  tag: "amd64-b3a8edba-20260426-1827"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+nodeSelector:
+  kubernetes.io/hostname: dev-vm-120
+tolerations: []
+affinity: {}
+hostAliases: []
+
+service:
+  type: ClusterIP
+  port: 16101
+  nodePort: ""
+
+config:
+  NODE_ENV: production
+  PORT: "16101"
+  BASE_URL: https://10.60.30.120:31300/silinex
+  AUTH_CALLBACK_URL: https://10.60.30.120:31300
+  BASE_API_URL: https://api.siliconflow.cn/v1
+  AUTH_COOKIE_NAME: silinex-maas
+  MAX_CHAT_INSTANCES: "2"
+  ENABLE_CONVERSATION_LIMIT: "true"
+  CONVERSATION_LIMIT: "5"
+  WARNING_THRESHOLD: "3"
+  COOKIE_DOMAIN: ""
+  SOFT_LIMIT_THRESHOLD: "4"
+  DEFAULT_AUTHENTICATED_PATH: /model-square
+  NODE_EXTRA_CA_CERTS: /ssl/nginx-chain.pem
+  NODE_TLS_REJECT_UNAUTHORIZED: "0"
+  LOGTO_ENDPOINT: https://10.60.30.120:31301/
+  LOGTO_APP_ID: 546gdjkgh6m8pnz228xcn
+  NEXT_PUBLIC_MODE: production
+  extraEnv: {}
+
+secrets:
+  create: true
+  name: ""
+  existingSecret: ""
+  JWT_SECRET: 72bc230132092e40d478adbbba8db1996ce47159f7ed05810097250306814764e9298ec2b8406ce71a71f3a5636db83e563113d4ec8ac0e5c3bd35e793486fe9
+  LOGTO_APP_SECRET: mTtxEBLWUW6SbLQ4yesZbWdPqRXHYXEm
+  LOGTO_COOKIE_SECRET: WoH0ksp2SGZiNsGCOittBLYWV4R9D9pB
+  extraStringData: {}
+
+trustedCa:
+  enabled: true
+  secretName: silinex-maas-nginx-tls
+  secretKey: tls.crt
+  mountPath: /ssl/nginx-chain.pem
+
+command:
+  - sh
+  - -c
+args:
+  - find /app -type f ! -name "*.svg" ! -name "*.ico" ! -name "*.png" -exec sed -i "s|http://placeholder:80/silinex|${BASE_URL}|g" {} + && /app/start.sh
+
+extraEnv: []
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+resources: {}
