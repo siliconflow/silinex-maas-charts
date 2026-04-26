@@ -14,7 +14,7 @@ Silinex MaaS Server Helm Chart
 
 先安装 Logto，再安装本 chart:
 
-    helm upgrade --install silinex-maas-server ./silinex-maas-server --create-namespace --namespace maas
+    helm upgrade --install silinex-maas-server ./silinex-maas-server --create-namespace --namespace sf-maas
 
 如果使用 chart 内的下载管理服务，先安装 silinex-model-downloader，后端默认会连接:
 
@@ -28,13 +28,21 @@ Silinex MaaS Server Helm Chart
 如需改到其它节点:
 
     helm upgrade --install silinex-maas-server ./silinex-maas-server \
-      --namespace maas \
+      --namespace sf-maas \
       --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
 
 数据库和 Redis
 --------------
 
-PostgreSQL 使用同一个实例，但后端和 Logto 必须使用不同的 db:
+PostgreSQL 默认使用 chart 内 CloudNativePG 集群:
+
+- postgres.host=pg-prod-rw
+- postgres.port=5432
+- postgres.user=silinex
+- postgres.serverDatabase=silinex_maas_test
+- postgres.logtoDatabase=maas_idp_test
+
+后端和 Logto 必须使用不同的 db:
 
     --set postgres.serverDatabase=<backend-db>
     --set postgres.logtoDatabase=<logto-db>
@@ -46,7 +54,7 @@ Redis 使用同一个实例时，后端要使用独立 db:
 默认使用 chart 内 Redis Sentinel，按以下命令安装 Redis 时可直接使用:
 
     helm upgrade --install redis-cache ./redis \
-      --namespace maas \
+      --namespace sf-maas \
       -f ./redis/cache-values.yaml
 
 后端默认 Redis 参数:
@@ -60,8 +68,8 @@ Redis 使用同一个实例时，后端要使用独立 db:
 示例:
 
     helm upgrade --install silinex-maas-server ./silinex-maas-server \
-      --namespace maas \
-      --set postgres.serverDatabase=silinex_maas \
+      --namespace sf-maas \
+      --set postgres.serverDatabase=silinex_maas_test \
       --set postgres.logtoDatabase=maas_idp_test \
       --set redis.db=1 \
       --set redis.mode=sentinel \
@@ -84,12 +92,12 @@ Redis 使用同一个实例时，后端要使用独立 db:
 验证
 ----
 
-    kubectl get deploy -n maas silinex-maas-server
-    kubectl get svc -n maas silinex-maas-server
-    kubectl get job -n maas silinex-maas-server-init
-    kubectl -n maas exec redis-cache-node-0 -c sentinel -- redis-cli -p 26379 sentinel get-master-addr-by-name redis-cache-master
+    kubectl get deploy -n sf-maas silinex-maas-server
+    kubectl get svc -n sf-maas silinex-maas-server
+    kubectl get job -n sf-maas silinex-maas-server-init
+    kubectl -n sf-maas exec redis-cache-node-0 -c sentinel -- redis-cli -p 26379 sentinel get-master-addr-by-name redis-cache-master
 
 卸载
 ----
 
-    helm uninstall silinex-maas-server -n maas
+    helm uninstall silinex-maas-server -n sf-maas

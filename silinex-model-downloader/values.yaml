@@ -30,8 +30,8 @@ service:
   nodePort: ""
 
 database:
-  name: silinex_maas_test
-  url: postgresql://postgres:postgres123@10.60.30.101:17032/silinex_maas_test
+  name: silinex_download_test
+  url: postgresql://silinex:silicon%40123@pg-prod-rw:5432/silinex_download_test
 
 authTokens:
   modelScope: "1"

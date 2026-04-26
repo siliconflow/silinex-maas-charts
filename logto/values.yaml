@@ -44,7 +44,7 @@ logto:
 secret:
   create: true
   name: ""
-  dbUrl: "postgres://postgres:postgres123@10.60.30.101:17032/maas_idp_test"
+  dbUrl: "postgres://silinex:silicon%40123@pg-prod-rw:5432/maas_idp_test"
   extraStringData: {}
 
 existingSecret:

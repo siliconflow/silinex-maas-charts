@@ -1,0 +1,53 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-prod
+  namespace: sf-maas
+spec:
+  instances: 3
+
+  # 1. 镜像配置
+  imageName: registry.inner.silinex.work/cloudnative-pg/postgresql:16.9
+  
+  # 2. 存储配置
+  storage:
+    size: 20Gi
+    storageClass: "local-path" 
+  
+  postgresUID: 26
+  postgresGID: 999 
+
+  # 3. 高可用同步配置 (注意：这两个字段在 spec 下，不在 postgresql 下)
+  minSyncReplicas: 1
+  maxSyncReplicas: 1
+
+  # 4. 数据库内部参数
+  postgresql:
+    parameters:
+      max_connections: "500"
+      shared_buffers: "5GB"
+
+  # 5. 初始化 MaaS 业务库、Logto 库、模型下载库
+  bootstrap:
+    initdb:
+      database: silinex_maas_test
+      owner: silinex
+      secret:
+        name: pg-user-password
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+  managed:
+    roles:
+      - name: silinex          # ✅ 不是保留用户，可以用 managed.roles
+        ensure: present
+        superuser: true        # 赋予超级用户权限（和 postgres 一样）
+        login: true
+        passwordSecret:
+          name: pg-user-password  # 从这个 Secret 读取密码
+        createdb: true
+        createrole: true
+
+  # 6. 监控
+  monitoring:
+    enablePodMonitor: true

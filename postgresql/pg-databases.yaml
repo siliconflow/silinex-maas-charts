@@ -1,0 +1,27 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: maas-idp-test
+  namespace: sf-maas
+spec:
+  cluster:
+    name: pg-prod
+  name: maas_idp_test
+  owner: silinex
+  databaseReclaimPolicy: retain
+  extensions:
+    - name: pgcrypto
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: silinex-download-test
+  namespace: sf-maas
+spec:
+  cluster:
+    name: pg-prod
+  name: silinex_download_test
+  owner: silinex
+  databaseReclaimPolicy: retain
+  extensions:
+    - name: pgcrypto

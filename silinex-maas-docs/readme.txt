@@ -14,7 +14,7 @@ Silinex MaaS Docs Helm Chart
 
     helm upgrade --install silinex-maas-docs ./silinex-maas-docs \
       --create-namespace \
-      --namespace maas
+      --namespace sf-maas
 
 常用覆盖参数
 ------------
@@ -25,11 +25,11 @@ Silinex MaaS Docs Helm Chart
 验证
 ----
 
-    kubectl get deploy -n maas silinex-maas-docs
-    kubectl get svc -n maas silinex-maas-docs
-    kubectl logs -n maas deploy/silinex-maas-docs
+    kubectl get deploy -n sf-maas silinex-maas-docs
+    kubectl get svc -n sf-maas silinex-maas-docs
+    kubectl logs -n sf-maas deploy/silinex-maas-docs
 
 卸载
 ----
 
-    helm uninstall silinex-maas-docs -n maas
+    helm uninstall silinex-maas-docs -n sf-maas

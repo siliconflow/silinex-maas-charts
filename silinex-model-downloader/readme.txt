@@ -16,13 +16,13 @@ Silinex Model Downloader Helm Chart
 
     helm upgrade --install silinex-model-downloader ./silinex-model-downloader \
       --create-namespace \
-      --namespace maas
+      --namespace sf-maas
 
 常用覆盖参数
 ------------
 
-    --set database.name=silinex_maas_test
-    --set database.url=postgresql://postgres:postgres123@10.60.30.101:17032/silinex_maas_test
+    --set database.name=silinex_download_test
+    --set database.url=postgresql://silinex:<password>@pg-prod-rw:5432/silinex_download_test
     --set authTokens.modelScope=<modelscope-token>
     --set authTokens.huggingFace=<huggingface-token>
     --set persistence.type=hostPath
@@ -50,11 +50,11 @@ Silinex Model Downloader Helm Chart
 ----
 
     kubectl get pv silinex-model-downloader-nfs
-    kubectl get pvc -n maas silinex-model-downloader-models
-    kubectl get deploy -n maas silinex-model-downloader
-    kubectl get svc -n maas silinex-model-downloader
-    kubectl logs -n maas deploy/silinex-model-downloader
-    kubectl -n maas exec deploy/silinex-model-downloader -- df -h /data/models
+    kubectl get pvc -n sf-maas silinex-model-downloader-models
+    kubectl get deploy -n sf-maas silinex-model-downloader
+    kubectl get svc -n sf-maas silinex-model-downloader
+    kubectl logs -n sf-maas deploy/silinex-model-downloader
+    kubectl -n sf-maas exec deploy/silinex-model-downloader -- df -h /data/models
 
 NFS FailedMount 排查
 -------------------
@@ -76,6 +76,6 @@ NFS FailedMount 排查
 卸载
 ----
 
-    helm uninstall silinex-model-downloader -n maas
+    helm uninstall silinex-model-downloader -n sf-maas
 
 默认 PV 回收策略是 Retain，卸载 Helm release 不会删除 NFS 上的模型文件。

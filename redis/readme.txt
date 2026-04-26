@@ -5,7 +5,7 @@
 
 ```bash
 helm upgrade --install redis-cache . \
-  --namespace maas \
+  --namespace sf-maas \
   --create-namespace \
   -f cache-values.yaml
 ```
@@ -25,13 +25,13 @@ helm upgrade --install redis-cache . \
 # 验证
 
 ```bash
-kubectl -n maas get svc | grep redis-cache
-kubectl -n maas get pod -l app.kubernetes.io/instance=redis-cache
+kubectl -n sf-maas get svc | grep redis-cache
+kubectl -n sf-maas get pod -l app.kubernetes.io/instance=redis-cache
 
-kubectl -n maas exec -it redis-cache-node-0 -c sentinel -- \
+kubectl -n sf-maas exec -it redis-cache-node-0 -c sentinel -- \
   redis-cli -p 26379 sentinel get-master-addr-by-name redis-cache-master
 
-kubectl -n maas exec -it redis-cache-node-0 -c redis -- \
+kubectl -n sf-maas exec -it redis-cache-node-0 -c redis -- \
   redis-cli -a 'silicon@123' info replication | grep role
 ```
 

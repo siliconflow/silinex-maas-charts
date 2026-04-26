@@ -36,7 +36,7 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 先把 Logto 改成 ClusterIP，并把 Logto 自己的 endpoint 改成 HTTPS:
 
     helm upgrade --install logto ./logto \
-      --namespace maas \
+      --namespace sf-maas \
       --set service.type=ClusterIP \
       --set logto.endpoint=https://10.60.30.120:31301 \
       --set logto.adminEndpoint=https://10.60.30.120:31302
@@ -44,12 +44,12 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 再安装 nginx:
 
     helm upgrade --install silinex-maas-nginx ./silinex-maas-nginx \
-      --namespace maas
+      --namespace sf-maas
 
 如需固定 nginx Pod 到某个节点:
 
     helm upgrade --install silinex-maas-nginx ./silinex-maas-nginx \
-      --namespace maas \
+      --namespace sf-maas \
       --set nodeName=<k8s-node-name>
 
 默认 nodeSelector 使用节点名 dev-vm-120:
@@ -60,7 +60,7 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 如需改到其它节点:
 
     helm upgrade --install silinex-maas-nginx ./silinex-maas-nginx \
-      --namespace maas \
+      --namespace sf-maas \
       --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
 
 如果 Logto release 不是 logto，或者 Service 名不同，覆盖 upstream:
@@ -78,7 +78,7 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 验证
 ----
 
-    kubectl get svc -n maas silinex-maas-nginx
+    kubectl get svc -n sf-maas silinex-maas-nginx
     curl -vk https://10.60.30.120:31300
     curl -vk https://10.60.30.120:31300/silinex/
     curl -vk https://10.60.30.120:31300/documents
@@ -88,4 +88,4 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 卸载
 ----
 
-    helm uninstall silinex-maas-nginx -n maas
+    helm uninstall silinex-maas-nginx -n sf-maas

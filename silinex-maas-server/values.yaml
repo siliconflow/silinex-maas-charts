@@ -1,6 +1,6 @@
 image:
   repository: registry.inner.silinex.work/silinex-maas/silinex-maas-server
-  tag: "amd64-62195d6a-20260426-1742"
+  tag: "amd64-2253a55d-20260427-0136"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -19,10 +19,10 @@ affinity: {}
 hostAliases: []
 
 postgres:
-  host: 10.60.30.101
-  port: 17032
-  user: postgres
-  password: postgres123
+  host: pg-prod-rw
+  port: 5432
+  user: silinex
+  password: silicon@123
   sslmode: disable
   timezone: Asia/Shanghai
   serverDatabase: silinex_maas_test

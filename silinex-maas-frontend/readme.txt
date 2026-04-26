@@ -14,7 +14,7 @@ Silinex MaaS Frontend Helm Chart
 
     helm upgrade --install silinex-maas-frontend ./silinex-maas-frontend \
       --create-namespace \
-      --namespace maas
+      --namespace sf-maas
 
 常用覆盖参数
 ------------
@@ -33,11 +33,11 @@ Silinex MaaS Frontend Helm Chart
 验证
 ----
 
-    kubectl get deploy -n maas silinex-maas-frontend
-    kubectl get svc -n maas silinex-maas-frontend
-    kubectl logs -n maas deploy/silinex-maas-frontend
+    kubectl get deploy -n sf-maas silinex-maas-frontend
+    kubectl get svc -n sf-maas silinex-maas-frontend
+    kubectl logs -n sf-maas deploy/silinex-maas-frontend
 
 卸载
 ----
 
-    helm uninstall silinex-maas-frontend -n maas
+    helm uninstall silinex-maas-frontend -n sf-maas
