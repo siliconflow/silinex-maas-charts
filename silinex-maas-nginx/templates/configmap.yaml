@@ -11,34 +11,19 @@ data:
         '' close;
     }
 
-    upstream silinex_maas_api {
-        server {{ .Values.upstreams.maasApi.host }}:{{ .Values.upstreams.maasApi.port }};
-        keepalive {{ .Values.upstreams.maasApi.keepalive }};
-    }
-
-    upstream silinex_maas_server {
-        server {{ .Values.upstreams.maasServer.host }}:{{ .Values.upstreams.maasServer.port }};
-    }
-
-    upstream silinex_maas_frontend {
-        server {{ .Values.upstreams.maasFrontend.host }}:{{ .Values.upstreams.maasFrontend.port }};
-    }
-
-    upstream silinex_maas_docs {
-        server {{ .Values.upstreams.maasDocs.host }}:{{ .Values.upstreams.maasDocs.port }};
-    }
-
-    upstream logto_app {
-        server {{ .Values.upstreams.logtoApp.host }}:{{ .Values.upstreams.logtoApp.port }};
-    }
-
-    upstream logto_admin {
-        server {{ .Values.upstreams.logtoAdmin.host }}:{{ .Values.upstreams.logtoAdmin.port }};
-    }
+    {{- if .Values.nginx.resolver }}
+    resolver {{ .Values.nginx.resolver }} valid={{ .Values.nginx.resolverValid }} ipv6=off;
+    resolver_timeout {{ .Values.nginx.resolverTimeout }};
+    {{- end }}
 
     server {
         listen {{ .Values.nginx.containerPorts.aggregateHttps }} ssl;
         server_name {{ .Values.nginx.serverName }} _;
+
+        set $silinex_maas_api "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.maasApi.host) }}:{{ .Values.upstreams.maasApi.port }}";
+        set $silinex_maas_server "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.maasServer.host) }}:{{ .Values.upstreams.maasServer.port }}";
+        set $silinex_maas_frontend "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.maasFrontend.host) }}:{{ .Values.upstreams.maasFrontend.port }}";
+        set $silinex_maas_docs "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.maasDocs.host) }}:{{ .Values.upstreams.maasDocs.port }}";
 
         ssl_certificate /etc/nginx/ssl/tls.crt;
         ssl_certificate_key /etc/nginx/ssl/tls.key;
@@ -49,7 +34,7 @@ data:
         client_max_body_size {{ .Values.nginx.clientMaxBodySize }};
 
         location ^~ /v1/ {
-            proxy_pass http://silinex_maas_api;
+            proxy_pass http://$silinex_maas_api;
             proxy_http_version 1.1;
             proxy_set_header Host $http_host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -64,7 +49,7 @@ data:
         }
 
         location ^~ /silinex/ {
-            proxy_pass http://silinex_maas_server;
+            proxy_pass http://$silinex_maas_server;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
@@ -81,7 +66,7 @@ data:
         }
 
         location ^~ /documents {
-            proxy_pass http://silinex_maas_docs;
+            proxy_pass http://$silinex_maas_docs;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
@@ -96,7 +81,7 @@ data:
         }
 
         location / {
-            proxy_pass http://silinex_maas_frontend;
+            proxy_pass http://$silinex_maas_frontend;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
@@ -115,6 +100,8 @@ data:
         listen {{ .Values.nginx.containerPorts.appHttps }} ssl;
         server_name {{ .Values.nginx.serverName }} _;
 
+        set $logto_app "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.logtoApp.host) }}:{{ .Values.upstreams.logtoApp.port }}";
+
         ssl_certificate /etc/nginx/ssl/tls.crt;
         ssl_certificate_key /etc/nginx/ssl/tls.key;
         ssl_protocols {{ .Values.nginx.sslProtocols }};
@@ -132,7 +119,7 @@ data:
         }
 
         location / {
-            proxy_pass http://logto_app;
+            proxy_pass http://$logto_app;
             proxy_http_version 1.1;
             proxy_set_header Host $http_host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -149,6 +136,8 @@ data:
         listen {{ .Values.nginx.containerPorts.adminHttps }} ssl;
         server_name {{ .Values.nginx.serverName }} _;
 
+        set $logto_admin "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.logtoAdmin.host) }}:{{ .Values.upstreams.logtoAdmin.port }}";
+
         ssl_certificate /etc/nginx/ssl/tls.crt;
         ssl_certificate_key /etc/nginx/ssl/tls.key;
         ssl_protocols {{ .Values.nginx.sslProtocols }};
@@ -158,7 +147,7 @@ data:
         client_max_body_size {{ .Values.nginx.clientMaxBodySize }};
 
         location / {
-            proxy_pass http://logto_admin;
+            proxy_pass http://$logto_admin;
             proxy_http_version 1.1;
             proxy_set_header Host $http_host;
             proxy_set_header X-Real-IP $remote_addr;

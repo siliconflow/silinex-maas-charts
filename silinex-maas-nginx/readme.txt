@@ -33,6 +33,8 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 安装顺序
 --------
 
+nginx 已使用运行时 DNS 解析，可以在 silinex-maas-server、silinex-maas-frontend、silinex-maas-docs 之前安装。未部署的上游在被访问时会返回 502，但不会阻塞 nginx 启动。
+
 先把 Logto 改成 ClusterIP，并把 Logto 自己的 endpoint 改成 HTTPS:
 
     helm upgrade --install logto ./logto \
@@ -74,6 +76,10 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
     --set upstreams.maasServer.host=<server-service> \
     --set upstreams.maasFrontend.host=<frontend-service> \
     --set upstreams.maasDocs.host=<docs-service>
+
+如果集群 DNS Service 名不是 kube-system/kube-dns，覆盖 nginx resolver:
+
+    --set nginx.resolver=<dns-service>.<dns-namespace>.svc.cluster.local
 
 验证
 ----

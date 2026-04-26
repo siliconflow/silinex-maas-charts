@@ -32,3 +32,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "silinex-maas-nginx.tlsSecretName" -}}
 {{- default (printf "%s-tls" (include "silinex-maas-nginx.fullname" .)) .Values.tls.secretName -}}
 {{- end -}}
+
+{{- define "silinex-maas-nginx.upstreamHost" -}}
+{{- $host := .host | toString -}}
+{{- if contains "." $host -}}
+{{- $host -}}
+{{- else -}}
+{{- printf "%s.%s.svc.cluster.local" $host .root.Release.Namespace -}}
+{{- end -}}
+{{- end -}}

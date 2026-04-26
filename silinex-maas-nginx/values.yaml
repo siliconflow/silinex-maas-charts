@@ -30,6 +30,9 @@ service:
 
 nginx:
   serverName: "10.60.30.120"
+  resolver: "kube-dns.kube-system.svc.cluster.local"
+  resolverValid: "10s"
+  resolverTimeout: "5s"
   sslProtocols: "TLSv1.2 TLSv1.3"
   sslCiphers: "HIGH:!aNULL:!MD5"
   proxyReadTimeout: "300s"
