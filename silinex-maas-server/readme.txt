@@ -43,13 +43,19 @@ Redis 使用同一个实例时，后端要使用独立 db:
 
     --set redis.db=<backend-redis-db>
 
-默认使用 Sentinel 模式:
+默认使用 chart 内 Redis Sentinel，按以下命令安装 Redis 时可直接使用:
+
+    helm upgrade --install redis-cache ./redis \
+      --namespace maas \
+      -f ./redis/cache-values.yaml
+
+后端默认 Redis 参数:
 
 - redis.mode=sentinel
-- redis.sentinelMasterName=silinex-redis
-- redis.sentinelAddrs=10.60.30.101:17119,10.60.30.102:17119,10.60.30.103:17119
-- redis.sentinelPassword 为空，当前 Sentinel 未配置认证
-- redis.password=redis123，用于连接 Redis master/replica
+- redis.sentinelMasterName=redis-cache-master
+- redis.sentinelAddrs=redis-cache:26379
+- redis.sentinelPassword 为空，当前 chart 内 Sentinel 未配置认证
+- redis.password=silicon@123，用于连接 Redis master/replica
 
 示例:
 
@@ -59,7 +65,7 @@ Redis 使用同一个实例时，后端要使用独立 db:
       --set postgres.logtoDatabase=maas_idp_test \
       --set redis.db=1 \
       --set redis.mode=sentinel \
-      --set redis.sentinelMasterName=silinex-redis \
+      --set redis.sentinelMasterName=redis-cache-master \
       --set logto.managementEndpoint=http://logto:16001
 
 常用参数
@@ -81,6 +87,7 @@ Redis 使用同一个实例时，后端要使用独立 db:
     kubectl get deploy -n maas silinex-maas-server
     kubectl get svc -n maas silinex-maas-server
     kubectl get job -n maas silinex-maas-server-init
+    kubectl -n maas exec redis-cache-node-0 -c sentinel -- redis-cli -p 26379 sentinel get-master-addr-by-name redis-cache-master
 
 卸载
 ----

@@ -10,6 +10,7 @@ Important install parameters:
   --set postgres.serverDatabase=<backend-db>
   --set postgres.logtoDatabase=<logto-db>
   --set redis.mode=sentinel
-  --set redis.sentinelMasterName=silinex-redis
+  --set redis.sentinelAddrs[0]=redis-cache:26379
+  --set redis.sentinelMasterName=redis-cache-master
   --set redis.db=<backend-redis-db>
   --set logto.managementEndpoint=http://logto:16001

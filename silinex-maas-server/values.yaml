@@ -32,15 +32,13 @@ postgres:
 
 redis:
   mode: sentinel
-  addr: 10.60.30.101:17111
+  addr: redis-cache:6379
   username: ""
-  password: redis123
+  password: silicon@123
   db: 1
   sentinelAddrs:
-    - 10.60.30.101:17119
-    - 10.60.30.102:17119
-    - 10.60.30.103:17119
-  sentinelMasterName: "silinex-redis"
+    - redis-cache:26379
+  sentinelMasterName: "redis-cache-master"
   sentinelUsername: ""
   sentinelPassword: ""
 
