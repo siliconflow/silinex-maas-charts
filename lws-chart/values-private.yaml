@@ -1,0 +1,8 @@
+# Private registry values for LWS
+# Use private registry as proxy for public registry
+
+image:
+  manager:
+    repository: registry.inner.silinex.work/registry.k8s.io/lws/lws
+    tag: v0.8.0
+    pullPolicy: IfNotPresent

@@ -1,0 +1,96 @@
+# ===================================================
+# Redis for cache 最终修正版 (跳过安全校验 + 强制字符串标签)
+# ===================================================
+
+# 1. 核心修复：跳过镜像来源验证
+global:
+  security:
+    allowInsecureImages: true
+
+architecture: replication
+
+# 2. 镜像配置 (注意: 8.2 必须加引号，防止被识别为数字)
+image:
+  registry: registry.inner.silinex.work
+  repository: bitnami/redis
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+auth:
+  enabled: true
+  password: "silicon@123"
+  sentinel: false
+
+# 3. 哨兵集群
+sentinel:
+  enabled: true
+  masterSet: redis-cache-master
+  quorum: 2
+  image:
+    registry: registry.inner.silinex.work
+    repository: bitnami/redis
+    tag: "latest"
+
+# 4. Master 节点结构补全
+master:
+  count: 1
+  service:
+    type: ClusterIP
+    ports:
+      redis: 6379
+  serviceAccount:
+    create: false
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+  persistence:
+    enabled: false
+    path: /data
+    size: 20Gi      
+# 5. Replica 节点结构补全
+replica:
+  replicaCount: 3
+  service:
+    type: ClusterIP
+    ports:
+      redis: 6379
+  serviceAccount:
+    create: false
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+  persistence:
+    enabled: false
+    path: /data
+    size: 20Gi
+
+# 6. 缓存 核心参数
+commonConfiguration: |-
+  maxmemory 4gb
+  maxmemory-policy allkeys-lru
+  tcp-backlog 1024
+  timeout 0
+  tcp-keepalive 300
+  save ""
+  appendonly no
+  protected-mode no
+  databases 16
+  loglevel notice
+# 7. 权限控制
+containerSecurityContext:
+  runAsUser: 1001
+podSecurityContext:
+  fsGroup: 1002
+
+# 8. 监控与辅助镜像映射 (解决报错中提到的 unrecognized images)
+metrics:
+  enabled: true
+  image:
+    registry: registry.inner.silinex.work
+    repository: bitnami/redis-exporter
+    tag: "latest"
+
+# 如果你的内网仓库里没有 bitnami/os-shell 等，你可能还需要在 values 里手动指定它们
+# 但通常设置了 global.security.allowInsecureImages 就可以直接跳过检查了

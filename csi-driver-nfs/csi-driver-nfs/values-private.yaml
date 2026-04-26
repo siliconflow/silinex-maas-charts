@@ -1,0 +1,33 @@
+image:
+    baseRepo: registry.inner.silinex.work/registry.k8s.io
+    nfs:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/nfsplugin
+        tag: v4.13.2
+        pullPolicy: IfNotPresent
+    csiProvisioner:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-provisioner
+        tag: v6.1.0
+        pullPolicy: IfNotPresent
+    csiResizer:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-resizer
+        tag: v2.0.0
+        pullPolicy: IfNotPresent
+    csiSnapshotter:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-snapshotter
+        tag: v8.4.0
+        pullPolicy: IfNotPresent
+    livenessProbe:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/livenessprobe
+        tag: v2.17.0
+        pullPolicy: IfNotPresent
+    nodeDriverRegistrar:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-node-driver-registrar
+        tag: v2.15.0
+        pullPolicy: IfNotPresent
+    externalSnapshotter:
+        repository: registry.inner.silinex.work/registry.k8s.io/sig-storage/snapshot-controller
+        tag: v8.4.0
+        pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: registry-secret
