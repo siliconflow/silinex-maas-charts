@@ -7,7 +7,7 @@ Silinex Model Downloader Helm Chart
 - Deployment/Service/PV/PVC: silinex-model-downloader
 - 默认 Service 类型: ClusterIP
 - 默认 Service 端口: 16102 -> 容器 8000
-- 默认 nodeSelector: kubernetes.io/hostname=dev-vm-120
+- 默认 nodeSelector: sf-maas-deploy=true
 - 默认存储: hostPath /maasjfs -> /data/models
 - NFS 可选: 10.191.59.2:/data-models -> /data/models
 
@@ -27,7 +27,7 @@ Silinex Model Downloader Helm Chart
     --set authTokens.huggingFace=<huggingface-token>
     --set persistence.type=hostPath
     --set persistence.hostPath.path=/maasjfs
-    --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
+    --set nodeSelector.<label-key>=<label-value>
 
 如果确认节点可以直接挂载 NFS，再启用 NFS PV/PVC:
 

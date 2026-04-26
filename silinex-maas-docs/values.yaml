@@ -2,6 +2,10 @@ replicaCount: 1
 
 global:
   imageRegistry: registry.inner.silinex.work/silinex-maas
+  managementPlane:
+    host: 10.60.30.120
+    ports:
+      aggregateHttps: 31300
 
 image:
   repository: e-maas-docs
@@ -21,8 +25,7 @@ podSecurityContext: {}
 securityContext: {}
 
 nodeSelector:
-  kubernetes.io/arch: amd64
-  kubernetes.io/hostname: dev-vm-120
+  sf-maas-deploy: "true"
 tolerations: []
 affinity: {}
 hostAliases: []
@@ -34,7 +37,7 @@ service:
 
 config:
   NODE_ENV: production
-  API_URL: https://10.60.30.120:31300
+  API_URL: ""
   PORT: "16103"
   extraEnv: {}
 

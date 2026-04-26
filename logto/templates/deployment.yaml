@@ -58,9 +58,9 @@ spec:
             - name: NODE_TLS_REJECT_UNAUTHORIZED
               value: {{ .Values.logto.nodeTlsRejectUnauthorized | quote }}
             - name: ENDPOINT
-              value: {{ .Values.logto.endpoint | quote }}
+              value: {{ default (include "logto.endpoint" .) .Values.logto.endpoint | quote }}
             - name: ADMIN_ENDPOINT
-              value: {{ .Values.logto.adminEndpoint | quote }}
+              value: {{ default (include "logto.adminEndpoint" .) .Values.logto.adminEndpoint | quote }}
             - name: DB_URL
               valueFrom:
                 secretKeyRef:

@@ -2,6 +2,8 @@ replicaCount: 1
 
 global:
   imageRegistry: registry.inner.silinex.work/silinex-maas
+  managementPlane:
+    host: 10.60.30.120
 
 image:
   repository: nginx
@@ -32,7 +34,7 @@ service:
     adminHttps: 31302
 
 nginx:
-  serverName: "10.60.30.120"
+  serverName: ""
   resolver: "kube-dns.kube-system.svc.cluster.local"
   resolverValid: "10s"
   resolverTimeout: "5s"
@@ -96,8 +98,7 @@ readinessProbe:
   failureThreshold: 6
 
 nodeSelector:
-  kubernetes.io/arch: amd64
-  kubernetes.io/hostname: dev-vm-120
+  sf-maas-deploy: "true"
 nodeName: ""
 tolerations: []
 affinity: {}

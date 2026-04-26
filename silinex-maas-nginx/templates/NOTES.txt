@@ -1,7 +1,7 @@
 Silinex MaaS nginx HTTPS proxy has been deployed.
 
 MaaS aggregate entry:
-  https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.aggregateHttps }}
+  https://{{ include "silinex-maas-nginx.managementPlaneHost" . }}:{{ .Values.service.nodePorts.aggregateHttps }}
 
 Routes:
   /v1/       -> http://{{ .Values.upstreams.maasApi.host }}:{{ .Values.upstreams.maasApi.port }}
@@ -10,12 +10,11 @@ Routes:
   /          -> http://{{ .Values.upstreams.maasFrontend.host }}:{{ .Values.upstreams.maasFrontend.port }}
 
 Logto app:
-  https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.appHttps }}
+  https://{{ include "silinex-maas-nginx.managementPlaneHost" . }}:{{ .Values.service.nodePorts.appHttps }}
 
 Logto admin:
-  https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.adminHttps }}
+  https://{{ include "silinex-maas-nginx.managementPlaneHost" . }}:{{ .Values.service.nodePorts.adminHttps }}
 
 The Logto chart should use ClusterIP and HTTPS endpoints:
   --set service.type=ClusterIP
-  --set logto.endpoint=https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.appHttps }}
-  --set logto.adminEndpoint=https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.adminHttps }}
+  --set global.managementPlane.host={{ include "silinex-maas-nginx.managementPlaneHost" . }}

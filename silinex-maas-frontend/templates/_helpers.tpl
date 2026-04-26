@@ -21,6 +21,18 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "silinex-maas-frontend.managementPlaneHost" -}}
+{{- default "10.60.30.120" .Values.global.managementPlane.host -}}
+{{- end -}}
+
+{{- define "silinex-maas-frontend.authCallbackUrl" -}}
+{{- printf "https://%s:%v" (include "silinex-maas-frontend.managementPlaneHost" .) (default 31300 .Values.global.managementPlane.ports.aggregateHttps) -}}
+{{- end -}}
+
+{{- define "silinex-maas-frontend.logtoEndpoint" -}}
+{{- printf "https://%s:%v/" (include "silinex-maas-frontend.managementPlaneHost" .) (default 31301 .Values.global.managementPlane.ports.appHttps) -}}
+{{- end -}}
+
 {{- define "silinex-maas-frontend.labels" -}}
 helm.sh/chart: {{ include "silinex-maas-frontend.chart" . }}
 {{ include "silinex-maas-frontend.selectorLabels" . }}

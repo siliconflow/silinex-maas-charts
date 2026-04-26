@@ -243,6 +243,10 @@ master:
   ## @param master.args Override default container args (useful when using custom images)
   ##
   args: [ ]
+  ## @param master.nodeSelector Node labels for Redis(R) master pods assignment
+  ##
+  nodeSelector:
+    sf-maas-deploy: "true"
   ## @param master.enableServiceLinks Whether information about services should be injected into pod's environment variable
   ##
   enableServiceLinks: true
@@ -466,11 +470,6 @@ master:
     ## NOTE: `master.podAffinityPreset`, `master.podAntiAffinityPreset`, and `master.nodeAffinityPreset` will be ignored when it's set
     ##
     affinity: { }
-    ## @param master.nodeSelector Node labels for Redis(R) master pods assignment
-    ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
-    ##
-    nodeSelector:
-      kubernetes.io/arch: amd64
     ## @param master.tolerations Tolerations for Redis(R) master pods assignment
     ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     ##
@@ -963,7 +962,7 @@ replica:
   ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
   nodeSelector:
-    kubernetes.io/arch: amd64
+    sf-maas-deploy: "true"
   ## @param replica.tolerations Tolerations for Redis(R) replicas pods assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##

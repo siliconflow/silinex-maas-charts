@@ -18,7 +18,7 @@ data:
 
     server {
         listen {{ .Values.nginx.containerPorts.aggregateHttps }} ssl;
-        server_name {{ .Values.nginx.serverName }} _;
+        server_name {{ include "silinex-maas-nginx.managementPlaneHost" . }} _;
 
         set $silinex_maas_api "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.maasApi.host) }}:{{ .Values.upstreams.maasApi.port }}";
         set $silinex_maas_server "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.maasServer.host) }}:{{ .Values.upstreams.maasServer.port }}";
@@ -98,7 +98,7 @@ data:
 
     server {
         listen {{ .Values.nginx.containerPorts.appHttps }} ssl;
-        server_name {{ .Values.nginx.serverName }} _;
+        server_name {{ include "silinex-maas-nginx.managementPlaneHost" . }} _;
 
         set $logto_app "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.logtoApp.host) }}:{{ .Values.upstreams.logtoApp.port }}";
 
@@ -134,7 +134,7 @@ data:
 
     server {
         listen {{ .Values.nginx.containerPorts.adminHttps }} ssl;
-        server_name {{ .Values.nginx.serverName }} _;
+        server_name {{ include "silinex-maas-nginx.managementPlaneHost" . }} _;
 
         set $logto_admin "{{ include "silinex-maas-nginx.upstreamHost" (dict "root" . "host" .Values.upstreams.logtoAdmin.host) }}:{{ .Values.upstreams.logtoAdmin.port }}";
 

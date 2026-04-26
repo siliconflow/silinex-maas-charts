@@ -16,6 +16,14 @@ Create chart name and version as used by labels.
 {{- end -}}
 {{- end -}}
 
+{{- define "silinex-maas-server.managementPlaneHost" -}}
+{{- default "10.60.30.120" .Values.global.managementPlane.host -}}
+{{- end -}}
+
+{{- define "silinex-maas-server.selfHost" -}}
+{{- default (printf "https://%s:%v" (include "silinex-maas-server.managementPlaneHost" .) (default 31300 .Values.global.managementPlane.ports.aggregateHttps)) .Values.config.serverSelfHost -}}
+{{- end -}}
+
 {{- define "silinex-maas-server.serverName" -}}
 {{- .Values.server.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

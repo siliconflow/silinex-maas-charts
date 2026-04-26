@@ -7,6 +7,7 @@ Init job:
   kubectl get job {{ include "silinex-maas-server.initJobName" . }}
 
 Important install parameters:
+  --set global.managementPlane.host=<management-plane-ip>
   --set postgres.serverDatabase=<backend-db>
   --set postgres.logtoDatabase=<logto-db>
   --set redis.mode=sentinel

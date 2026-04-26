@@ -166,7 +166,7 @@ resources: {}
 
 # -- Nodeselector for the operator to be installed.
 nodeSelector:
-  kubernetes.io/arch: amd64
+  sf-maas-deploy: "true"
 
 # -- Topology Spread Constraints for the operator to be installed.
 topologySpreadConstraints: []

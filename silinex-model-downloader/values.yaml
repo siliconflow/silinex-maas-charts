@@ -21,8 +21,7 @@ podSecurityContext: {}
 securityContext: {}
 
 nodeSelector:
-  kubernetes.io/arch: amd64
-  kubernetes.io/hostname: dev-vm-120
+  sf-maas-deploy: "true"
 tolerations: []
 affinity: {}
 hostAliases: []

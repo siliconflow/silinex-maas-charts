@@ -48,7 +48,7 @@ resources:
     #   cpu: 100m
     #   memory: 128Mi
 nodeSelector:
-  kubernetes.io/arch: amd64
+  sf-maas-deploy: "true"
 tolerations: []
 affinity: {}
 # gangSchedulingManagement is configuration for gang scheduling management.

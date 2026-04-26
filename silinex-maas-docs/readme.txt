@@ -7,7 +7,7 @@ Silinex MaaS Docs Helm Chart
 - Deployment/Service: silinex-maas-docs
 - 默认 Service 类型: ClusterIP
 - 默认端口: 16103
-- 默认 nodeSelector: kubernetes.io/hostname=dev-vm-120
+- 默认 nodeSelector: sf-maas-deploy=true
 
 安装
 ----
@@ -19,8 +19,9 @@ Silinex MaaS Docs Helm Chart
 常用覆盖参数
 ------------
 
-    --set config.API_URL=https://10.60.30.120:31300
-    --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
+    --set global.managementPlane.host=<management-plane-ip>
+    --set config.API_URL=<override-api-url>
+    --set-string nodeSelector.sf-maas-deploy=true
 
 验证
 ----

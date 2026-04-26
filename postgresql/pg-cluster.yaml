@@ -13,6 +13,10 @@ spec:
   storage:
     size: 20Gi
     storageClass: "local-path" 
+
+  affinity:
+    nodeSelector:
+      sf-maas-deploy: "true"
   
   postgresUID: 26
   postgresGID: 999 

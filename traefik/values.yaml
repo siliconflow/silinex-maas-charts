@@ -1140,7 +1140,7 @@ affinity: {}
 
 # -- nodeSelector is the simplest recommended form of node selection constraint.
 nodeSelector:
-  kubernetes.io/arch: amd64
+  sf-maas-deploy: "true"
 # -- Tolerations allow the scheduler to schedule pods with matching taints.
 tolerations: []
 # -- You can use topology spread constraints to control

@@ -39,6 +39,18 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 {{- end -}}
 
+{{- define "logto.managementPlaneHost" -}}
+{{- default "10.60.30.120" .Values.global.managementPlane.host -}}
+{{- end -}}
+
+{{- define "logto.endpoint" -}}
+{{- printf "https://%s:%v" (include "logto.managementPlaneHost" .) (default 31301 .Values.global.managementPlane.ports.appHttps) -}}
+{{- end -}}
+
+{{- define "logto.adminEndpoint" -}}
+{{- printf "https://%s:%v" (include "logto.managementPlaneHost" .) (default 31302 .Values.global.managementPlane.ports.adminHttps) -}}
+{{- end -}}
+
 {{/*
 Common labels.
 */}}

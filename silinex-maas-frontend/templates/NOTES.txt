@@ -4,6 +4,7 @@ Service:
   kubectl get svc {{ include "silinex-maas-frontend.fullname" . }}
 
 Important parameters:
+  --set global.managementPlane.host=<management-plane-ip>
   --set config.BASE_URL=http://silinex-maas-server:16100/silinex
-  --set config.AUTH_CALLBACK_URL=https://10.60.30.120:31300
-  --set config.LOGTO_ENDPOINT=https://10.60.30.120:31301/
+  --set config.AUTH_CALLBACK_URL=<override-callback-url>
+  --set config.LOGTO_ENDPOINT=<override-logto-endpoint>

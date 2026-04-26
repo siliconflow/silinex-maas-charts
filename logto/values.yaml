@@ -2,6 +2,11 @@ replicaCount: 1
 
 global:
   imageRegistry: registry.inner.silinex.work/silinex-maas
+  managementPlane:
+    host: 10.60.30.120
+    ports:
+      appHttps: 31301
+      adminHttps: 31302
 
 image:
   repository: logto
@@ -35,8 +40,8 @@ service:
 logto:
   trustProxyHeader: "1"
   nodeTlsRejectUnauthorized: "0"
-  endpoint: "https://10.60.30.120:31301"
-  adminEndpoint: "https://10.60.30.120:31302"
+  endpoint: ""
+  adminEndpoint: ""
   command:
     - sh
     - -c
@@ -83,6 +88,6 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 nodeSelector:
-  kubernetes.io/arch: amd64
+  sf-maas-deploy: "true"
 tolerations: []
 affinity: {}

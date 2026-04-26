@@ -1,5 +1,9 @@
 global:
   imageRegistry: registry.inner.silinex.work/silinex-maas
+  managementPlane:
+    host: 10.60.30.120
+    ports:
+      aggregateHttps: 31300
 
 image:
   repository: silinex-maas-server
@@ -16,8 +20,7 @@ serviceAccount:
 podSecurityContext: {}
 securityContext: {}
 nodeSelector:
-  kubernetes.io/arch: amd64
-  kubernetes.io/hostname: dev-vm-120
+  sf-maas-deploy: "true"
 tolerations: []
 affinity: {}
 hostAliases: []
@@ -55,7 +58,7 @@ config:
   env: dev
   serverHost: 0.0.0.0
   serverPort: 16100
-  serverSelfHost: https://maas.gz.xxxxxxxx.com
+  serverSelfHost: ""
   jwtMaxAge: "360000"
   enableScheduler: true
   debugEnableFakeLogin: false

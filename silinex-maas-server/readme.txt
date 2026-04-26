@@ -20,16 +20,20 @@ Silinex MaaS Server Helm Chart
 
     http://silinex-model-downloader:16102
 
-默认 nodeSelector 使用节点名 dev-vm-120，server Deployment 和 init Job 都会调度到这个节点:
+默认 nodeSelector 使用部署标签，server Deployment 和 init Job 都会调度到带这个标签的节点:
 
     nodeSelector:
-      kubernetes.io/hostname: dev-vm-120
+      sf-maas-deploy: "true"
 
-如需改到其它节点:
+部署前需要先给目标节点打标:
+
+    kubectl label node <k8s-node-name> sf-maas-deploy=true
+
+如需改到其它选择器:
 
     helm upgrade --install silinex-maas-server ./silinex-maas-server \
       --namespace sf-maas \
-      --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
+      --set nodeSelector.<label-key>=<label-value>
 
 数据库和 Redis
 --------------
@@ -85,7 +89,8 @@ Redis 使用同一个实例时，后端要使用独立 db:
 - redis.addr / redis.password / redis.db
 - redis.mode / redis.sentinelAddrs / redis.sentinelMasterName
 - logto.managementEndpoint / logto.managementAppId / logto.managementAppSecret
-- config.serverSelfHost
+- global.managementPlane.host: 默认用于生成 config.serverSelfHost
+- config.serverSelfHost: 显式覆盖后端自访问地址
 - config.modelManagerEndpoint: 默认 http://silinex-model-downloader:16102
 - initJob.adminUsername / initJob.adminPassword / initJob.autoMigrate
 

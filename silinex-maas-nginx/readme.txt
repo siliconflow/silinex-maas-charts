@@ -6,9 +6,9 @@ Silinex MaaS Nginx Helm Chart
 
 给 MaaS 提供一个独立 nginx 入口:
 
-- 聚合入口:    https://10.60.30.120:31300
-- Logto app:   https://10.60.30.120:31301 -> http://logto:16001
-- Logto admin: https://10.60.30.120:31302 -> http://logto:16002
+- 聚合入口:    https://<management-plane-ip>:31300
+- Logto app:   https://<management-plane-ip>:31301 -> http://logto:16001
+- Logto admin: https://<management-plane-ip>:31302 -> http://logto:16002
 
 nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/31302，不使用 80/443 这类通用端口。
 
@@ -28,7 +28,7 @@ nginx 容器监听端口、Service port、NodePort 都固定使用 31300/31301/3
 - ssl_baoneng_tmp/nginx-chain.pem
 - ssl_baoneng_tmp/nginx.key
 
-证书 SAN 已包含 10.60.30.120。浏览器仍需要信任签发这个证书的内部 CA。
+默认随 chart 带的证书适配默认管控面地址。客户环境如调整 `global.managementPlane.host`，需要同时提供匹配的 TLS 证书文件或 Secret。浏览器仍需要信任签发这个证书的内部 CA。
 
 安装顺序
 --------
@@ -40,13 +40,13 @@ nginx 已使用运行时 DNS 解析，可以在 silinex-maas-server、silinex-ma
     helm upgrade --install logto ./logto \
       --namespace sf-maas \
       --set service.type=ClusterIP \
-      --set logto.endpoint=https://10.60.30.120:31301 \
-      --set logto.adminEndpoint=https://10.60.30.120:31302
+      --set global.managementPlane.host=<management-plane-ip>
 
 再安装 nginx:
 
     helm upgrade --install silinex-maas-nginx ./silinex-maas-nginx \
-      --namespace sf-maas
+      --namespace sf-maas \
+      --set global.managementPlane.host=<management-plane-ip>
 
 如需固定 nginx Pod 到某个节点:
 
@@ -54,16 +54,20 @@ nginx 已使用运行时 DNS 解析，可以在 silinex-maas-server、silinex-ma
       --namespace sf-maas \
       --set nodeName=<k8s-node-name>
 
-默认 nodeSelector 使用节点名 dev-vm-120:
+默认 nodeSelector 使用部署标签:
 
     nodeSelector:
-      kubernetes.io/hostname: dev-vm-120
+      sf-maas-deploy: "true"
 
-如需改到其它节点:
+部署前需要先给目标节点打标:
+
+    kubectl label node <k8s-node-name> sf-maas-deploy=true
+
+如需改到其它选择器:
 
     helm upgrade --install silinex-maas-nginx ./silinex-maas-nginx \
       --namespace sf-maas \
-      --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
+      --set nodeSelector.<label-key>=<label-value>
 
 如果 Logto release 不是 logto，或者 Service 名不同，覆盖 upstream:
 
@@ -85,11 +89,11 @@ nginx 已使用运行时 DNS 解析，可以在 silinex-maas-server、silinex-ma
 ----
 
     kubectl get svc -n sf-maas silinex-maas-nginx
-    curl -vk https://10.60.30.120:31300
-    curl -vk https://10.60.30.120:31300/silinex/
-    curl -vk https://10.60.30.120:31300/documents
-    curl -vk https://10.60.30.120:31301
-    curl -vk https://10.60.30.120:31302
+    curl -vk https://<management-plane-ip>:31300
+    curl -vk https://<management-plane-ip>:31300/silinex/
+    curl -vk https://<management-plane-ip>:31300/documents
+    curl -vk https://<management-plane-ip>:31301
+    curl -vk https://<management-plane-ip>:31302
 
 卸载
 ----

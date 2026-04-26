@@ -1,10 +1,10 @@
 Logto has been deployed.
 
 App endpoint:
-  {{ .Values.logto.endpoint }}
+  {{ default (include "logto.endpoint" .) .Values.logto.endpoint }}
 
 Admin endpoint:
-  {{ .Values.logto.adminEndpoint }}
+  {{ default (include "logto.adminEndpoint" .) .Values.logto.adminEndpoint }}
 
 Check pods:
   kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}

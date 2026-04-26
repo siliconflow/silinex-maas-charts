@@ -21,6 +21,14 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "silinex-maas-docs.managementPlaneHost" -}}
+{{- default "10.60.30.120" .Values.global.managementPlane.host -}}
+{{- end -}}
+
+{{- define "silinex-maas-docs.apiUrl" -}}
+{{- printf "https://%s:%v" (include "silinex-maas-docs.managementPlaneHost" .) (default 31300 .Values.global.managementPlane.ports.aggregateHttps) -}}
+{{- end -}}
+
 {{- define "silinex-maas-docs.labels" -}}
 helm.sh/chart: {{ include "silinex-maas-docs.chart" . }}
 {{ include "silinex-maas-docs.selectorLabels" . }}

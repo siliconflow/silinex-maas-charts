@@ -11,14 +11,13 @@ Logto Helm Chart
 如需覆盖外部访问地址:
 
     helm install logto ./logto --create-namespace --namespace sf-maas \
-      --set logto.endpoint=http://<node-ip>:31301 \
-      --set logto.adminEndpoint=http://<node-ip>:31302
+      --set global.managementPlane.host=<management-plane-ip>
 
 访问
 ----
 
-App:   https://10.60.30.120:31301
-Admin: https://10.60.30.120:31302
+App:   https://<management-plane-ip>:31301
+Admin: https://<management-plane-ip>:31302
 
 主要默认配置
 ------------

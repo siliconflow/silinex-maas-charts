@@ -4,4 +4,5 @@ Service:
   kubectl get svc {{ include "silinex-maas-docs.fullname" . }}
 
 Important parameters:
-  --set config.API_URL=https://10.60.30.120:31300
+  --set global.managementPlane.host=<management-plane-ip>
+  --set config.API_URL=<override-api-url>

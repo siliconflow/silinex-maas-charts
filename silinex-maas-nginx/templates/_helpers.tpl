@@ -21,6 +21,10 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "silinex-maas-nginx.managementPlaneHost" -}}
+{{- default (default "10.60.30.120" .Values.global.managementPlane.host) .Values.nginx.serverName -}}
+{{- end -}}
+
 {{- define "silinex-maas-nginx.labels" -}}
 helm.sh/chart: {{ include "silinex-maas-nginx.chart" . }}
 {{ include "silinex-maas-nginx.selectorLabels" . }}

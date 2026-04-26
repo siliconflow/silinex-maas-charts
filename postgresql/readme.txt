@@ -17,6 +17,10 @@ Silinex MaaS PostgreSQL
 安装 PostgreSQL 集群
 --------------------
 
+PostgreSQL 实例默认使用 `sf-maas-deploy=true` 节点标签，部署前需要先给目标节点打标:
+
+    kubectl label node <k8s-node-name> sf-maas-deploy=true
+
     kubectl create namespace sf-maas --dry-run=client -o yaml | kubectl apply -f -
     kubectl apply -f pg-secret.yaml
     kubectl apply -f pg-cluster.yaml

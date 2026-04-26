@@ -68,7 +68,7 @@ controller:
   defaultOnDeletePolicy: delete  # available values: delete, retain
   affinity: {}
   nodeSelector:
-    kubernetes.io/arch: amd64
+    sf-maas-deploy: "true"
   priorityClassName: system-cluster-critical
   tolerations:
     - key: "node-role.kubernetes.io/master"
@@ -133,7 +133,7 @@ node:
     healthPort: 29653
   affinity: {}
   nodeSelector:
-    kubernetes.io/arch: amd64
+    sf-maas-deploy: "true"
   priorityClassName: system-cluster-critical
   tolerations:
     - operator: "Exists"

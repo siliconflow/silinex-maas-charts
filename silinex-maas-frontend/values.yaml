@@ -2,6 +2,11 @@ replicaCount: 1
 
 global:
   imageRegistry: registry.inner.silinex.work/silinex-maas
+  managementPlane:
+    host: 10.60.30.120
+    ports:
+      aggregateHttps: 31300
+      appHttps: 31301
 
 image:
   repository: e-maas
@@ -21,8 +26,7 @@ podSecurityContext: {}
 securityContext: {}
 
 nodeSelector:
-  kubernetes.io/arch: amd64
-  kubernetes.io/hostname: dev-vm-120
+  sf-maas-deploy: "true"
 tolerations: []
 affinity: {}
 hostAliases: []
@@ -36,7 +40,7 @@ config:
   NODE_ENV: production
   PORT: "16101"
   BASE_URL: http://silinex-maas-server:16100/silinex
-  AUTH_CALLBACK_URL: https://10.60.30.120:31300
+  AUTH_CALLBACK_URL: ""
   BASE_API_URL: https://api.siliconflow.cn/v1
   AUTH_COOKIE_NAME: silinex-maas
   MAX_CHAT_INSTANCES: "2"
@@ -48,7 +52,7 @@ config:
   DEFAULT_AUTHENTICATED_PATH: /model-square
   NODE_EXTRA_CA_CERTS: /ssl/nginx-chain.pem
   NODE_TLS_REJECT_UNAUTHORIZED: "0"
-  LOGTO_ENDPOINT: https://10.60.30.120:31301/
+  LOGTO_ENDPOINT: ""
   LOGTO_APP_ID: 546gdjkgh6m8pnz228xcn
   NEXT_PUBLIC_MODE: production
   extraEnv: {}

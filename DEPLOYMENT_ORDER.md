@@ -17,7 +17,13 @@ global:
 --set global.imageRegistry=<customer-registry>/silinex-maas
 ```
 
-镜像按 amd64/x86_64 准备；chart 中可调度的工作负载默认带 `kubernetes.io/arch: amd64` 节点选择，避免 x86 镜像被调度到非 x86 节点。
+镜像按 amd64/x86_64 准备；chart 中可调度的工作负载默认带 `sf-maas-deploy: "true"` 节点选择。部署前需要先选好承载 MaaS 的节点并打标:
+
+```bash
+kubectl label node <node-name> sf-maas-deploy=true
+```
+
+客户环境里管控面地址通过各 chart 的 `global.managementPlane.host` 覆盖，默认值是 `10.60.30.120`。
 
 ## 1. PostgreSQL
 
@@ -118,7 +124,7 @@ kubectl -n sf-maas get pods -l app.kubernetes.io/instance=logto
 ```bash
 helm upgrade --install silinex-model-downloader ./silinex-model-downloader \
   --namespace sf-maas \
-  --create-namespace --set persistence.type=nfs --set persistence.nfs.server=10.60.30.120 --set persistence.nfs.path=/srv/nfs/test/
+  --create-namespace --set persistence.type=nfs --set persistence.nfs.server=<nfs-server-ip> --set persistence.nfs.path=/srv/nfs/test/
 ```
 
 再装后端。升级时建议先删除旧 init Job，避免 Job template 不可变导致 Helm upgrade 失败:
