@@ -10,6 +10,17 @@
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "silinex-model-downloader.image" -}}
+{{- $registry := .Values.global.imageRegistry | default "" | trimSuffix "/" -}}
+{{- $repository := required "image.repository is required" .Values.image.repository | trimPrefix "/" -}}
+{{- $tag := required "image.tag is required" (.Values.image.tag | default .Chart.AppVersion) -}}
+{{- if $registry -}}
+{{- printf "%s/%s:%s" $registry $repository $tag -}}
+{{- else -}}
+{{- printf "%s:%s" $repository $tag -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "silinex-model-downloader.labels" -}}
 helm.sh/chart: {{ include "silinex-model-downloader.chart" . }}
 {{ include "silinex-model-downloader.selectorLabels" . }}

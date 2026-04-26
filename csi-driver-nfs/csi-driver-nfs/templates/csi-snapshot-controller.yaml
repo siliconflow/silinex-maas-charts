@@ -77,11 +77,7 @@ spec:
 {{- end }}
       containers:
         - name: {{ .Values.externalSnapshotter.name }}
-{{- if hasPrefix "/" .Values.image.externalSnapshotter.repository }}
-          image: "{{ .Values.image.baseRepo }}{{ .Values.image.externalSnapshotter.repository }}:{{ .Values.image.externalSnapshotter.tag }}"
-{{- else }}
-          image: {{ .Values.image.externalSnapshotter.repository }}:{{ .Values.image.externalSnapshotter.tag }}
-{{- end }}
+          image: "{{ include "nfs.image" (dict "root" . "image" .Values.image.externalSnapshotter) }}"
           args:
             - "--v=2"
             - "--leader-election=true"

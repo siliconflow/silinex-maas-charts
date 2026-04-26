@@ -1,7 +1,10 @@
 replicaCount: 1
 
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
 image:
-  repository: registry.inner.silinex.work/silinex-maas/logto
+  repository: logto
   tag: "1.28.0-amd64"
   pullPolicy: IfNotPresent
 
@@ -79,6 +82,7 @@ autoscaling:
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
 
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/arch: amd64
 tolerations: []
 affinity: {}

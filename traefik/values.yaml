@@ -3,8 +3,6 @@
 # Declare variables to be passed into templates
 
 image:  # @schema additionalProperties: false
-  # -- Traefik image host registry
-  registry: docker.io
   # -- Traefik image repository
   repository: traefik
   # -- defaults to appVersion. It's used for version checking, even prefixed with experimental- or latest-.
@@ -775,6 +773,8 @@ tracing:  # @schema additionalProperties: false
         insecureSkipVerify:  # @schema type:[boolean, null]
 
 global:
+  # -- Image registry prefix used for every rendered image.
+  imageRegistry: registry.inner.silinex.work/silinex-maas
   checkNewVersion: true
   # -- Please take time to consider whether or not you wish to share anonymous data with us
   # See https://doc.traefik.io/traefik/contributing/data-collection/
@@ -788,11 +788,9 @@ global:
       proxy:
         image: traefik
         tag: latest
-        registry: docker.io/library
       hub:
         image: traefik-hub
         tag: latest
-        registry: ghcr.io/traefik
 
 # -- Additional arguments to be passed at Traefik's binary
 # See [CLI Reference](https://docs.traefik.io/reference/static-configuration/cli/)
@@ -1141,7 +1139,8 @@ affinity: {}
 #        topologyKey: kubernetes.io/hostname
 
 # -- nodeSelector is the simplest recommended form of node selection constraint.
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/arch: amd64
 # -- Tolerations allow the scheduler to schedule pods with matching taints.
 tolerations: []
 # -- You can use topology spread constraints to control
@@ -1385,7 +1384,7 @@ oci_meta:
   # -- Enable specific values for Oracle Cloud Infrastructure
   enabled: false
   # -- It needs to be an ocir repo
-  repo: traefik
+  repo: ""
   images:
     proxy:
       image: traefik

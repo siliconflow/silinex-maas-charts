@@ -1,7 +1,10 @@
 replicaCount: 1
 
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
 image:
-  repository: registry.inner.silinex.work/silinex-maas/silinex-model-downloader
+  repository: silinex-model-downloader
   tag: "amd64-c5ee5dbf-20260426-1903"
   pullPolicy: IfNotPresent
 
@@ -18,6 +21,7 @@ podSecurityContext: {}
 securityContext: {}
 
 nodeSelector:
+  kubernetes.io/arch: amd64
   kubernetes.io/hostname: dev-vm-120
 tolerations: []
 affinity: {}

@@ -41,6 +41,17 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "cloudnative-pg.image" -}}
+{{- $registry := .Values.global.imageRegistry | default "" | trimSuffix "/" -}}
+{{- $repository := required "image.repository is required" .Values.image.repository | trimPrefix "/" -}}
+{{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
+{{- if $registry -}}
+{{- printf "%s/%s:%s" $registry $repository $tag -}}
+{{- else -}}
+{{- printf "%s:%s" $repository $tag -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Common labels
 */}}

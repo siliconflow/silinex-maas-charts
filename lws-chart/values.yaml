@@ -4,6 +4,8 @@
 
 nameOverride: ""
 fullnameOverride: ""
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
 enablePrometheus: false
 enableCertManager: false
 replicaCount: 1
@@ -11,10 +13,10 @@ imagePullSecrets: []
 # Customize controlerManager
 image:
   manager:
-    repository: registry.k8s.io/lws/lws
+    repository: lws
     # tag, if defined will use the given image tag, else Chart.AppVersion will be used
-    tag: main
-    pullPolicy: Always
+    tag: v0.8.0
+    pullPolicy: IfNotPresent
 podAnnotations: {}
 podSecurityContext:
   runAsNonRoot: true
@@ -45,7 +47,8 @@ resources:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/arch: amd64
 tolerations: []
 affinity: {}
 # gangSchedulingManagement is configuration for gang scheduling management.

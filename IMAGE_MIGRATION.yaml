@@ -1,0 +1,316 @@
+schemaVersion: 1
+canonicalRegistry: registry.inner.silinex.work/silinex-maas
+canonicalRepositoryPrefix: ""
+overrideContract:
+  onlyRegistryPrefixValue: global.imageRegistry
+  renderedImageFormat: "${global.imageRegistry}/<image-name>:<tag>"
+  imageRepositoryFormat: "<image-name>"
+images:
+  - name: e-maas
+    component: silinex-maas-frontend
+    before:
+      - file: silinex-maas-frontend/values.yaml
+        full: registry.inner.silinex.work/silinex-maas/e-maas:amd64-b3a8edba-20260426-1827
+        repository: registry.inner.silinex.work/silinex-maas/e-maas
+        tag: amd64-b3a8edba-20260426-1827
+    after:
+      file: silinex-maas-frontend/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/e-maas:amd64-b3a8edba-20260426-1827
+      repository: e-maas
+      tag: amd64-b3a8edba-20260426-1827
+  - name: e-maas-docs
+    component: silinex-maas-docs
+    before:
+      - file: silinex-maas-docs/values.yaml
+        full: registry.inner.silinex.work/silinex-maas/e-maas-docs:amd64-57cdac93-20260426-1831
+        repository: registry.inner.silinex.work/silinex-maas/e-maas-docs
+        tag: amd64-57cdac93-20260426-1831
+    after:
+      file: silinex-maas-docs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/e-maas-docs:amd64-57cdac93-20260426-1831
+      repository: e-maas-docs
+      tag: amd64-57cdac93-20260426-1831
+  - name: silinex-maas-server
+    component: silinex-maas-server
+    before:
+      - file: silinex-maas-server/values.yaml
+        full: registry.inner.silinex.work/silinex-maas/silinex-maas-server:amd64-2253a55d-20260427-0136
+        repository: registry.inner.silinex.work/silinex-maas/silinex-maas-server
+        tag: amd64-2253a55d-20260427-0136
+    after:
+      file: silinex-maas-server/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/silinex-maas-server:amd64-2253a55d-20260427-0136
+      repository: silinex-maas-server
+      tag: amd64-2253a55d-20260427-0136
+  - name: silinex-model-downloader
+    component: silinex-model-downloader
+    before:
+      - file: silinex-model-downloader/values.yaml
+        full: registry.inner.silinex.work/silinex-maas/silinex-model-downloader:amd64-c5ee5dbf-20260426-1903
+        repository: registry.inner.silinex.work/silinex-maas/silinex-model-downloader
+        tag: amd64-c5ee5dbf-20260426-1903
+    after:
+      file: silinex-model-downloader/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/silinex-model-downloader:amd64-c5ee5dbf-20260426-1903
+      repository: silinex-model-downloader
+      tag: amd64-c5ee5dbf-20260426-1903
+  - name: nginx
+    component: silinex-maas-nginx
+    before:
+      - file: silinex-maas-nginx/values.yaml
+        full: registry.inner.silinex.work/silinex-maas/nginx:1.28.3-alpine-perl
+        repository: registry.inner.silinex.work/silinex-maas/nginx
+        tag: 1.28.3-alpine-perl
+    after:
+      file: silinex-maas-nginx/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/nginx:1.28.3-alpine-perl
+      repository: nginx
+      tag: 1.28.3-alpine-perl
+  - name: logto
+    component: logto
+    before:
+      - file: logto/values.yaml
+        full: registry.inner.silinex.work/silinex-maas/logto:1.28.0-amd64
+        repository: registry.inner.silinex.work/silinex-maas/logto
+        tag: 1.28.0-amd64
+    after:
+      file: logto/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/logto:1.28.0-amd64
+      repository: logto
+      tag: 1.28.0-amd64
+  - name: traefik
+    component: traefik
+    before:
+      - file: traefik/values.yaml
+        full: docker.io/traefik:v3.6.13
+        repository: traefik
+        registry: docker.io
+        tag: v3.6.13
+    after:
+      file: traefik/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/traefik:v3.6.13
+      repository: traefik
+      tag: v3.6.13
+    pushedFrom: docker.io/library/traefik:v3.6.13
+  - name: lws
+    component: lws-chart
+    before:
+      - file: lws-chart/values.yaml
+        full: registry.k8s.io/lws/lws:main
+        repository: registry.k8s.io/lws/lws
+        tag: main
+      - file: lws-chart/values-private.yaml
+        full: registry.inner.silinex.work/registry.k8s.io/lws/lws:v0.8.0
+        repository: registry.inner.silinex.work/registry.k8s.io/lws/lws
+        tag: v0.8.0
+    after:
+      file: lws-chart/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/lws:v0.8.0
+      repository: lws
+      tag: v0.8.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/lws/lws:v0.8.0
+  - name: cloudnative-pg
+    component: postgresql/cloudnative-pg
+    before:
+      - file: postgresql/cloudnative-pg/values.yaml
+        full: registry.inner.silinex.work/cloudnative-pg/cloudnative-pg:1.26.1
+        repository: registry.inner.silinex.work/cloudnative-pg/cloudnative-pg
+        tag: 1.26.1
+    after:
+      file: postgresql/cloudnative-pg/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/cloudnative-pg:1.26.1
+      repository: cloudnative-pg
+      tag: 1.26.1
+    pushedFrom: registry.inner.silinex.work/cloudnative-pg/cloudnative-pg:1.26.1
+  - name: postgresql
+    component: postgresql/pg-cluster
+    before:
+      - file: postgresql/pg-cluster.yaml
+        full: registry.inner.silinex.work/cloudnative-pg/postgresql:16.9
+        repository: registry.inner.silinex.work/cloudnative-pg/postgresql
+        tag: "16.9"
+    after:
+      file: postgresql/pg-cluster.yaml
+      full: registry.inner.silinex.work/silinex-maas/postgresql:16.9
+      repository: postgresql
+      tag: "16.9"
+    pushedFrom: registry.inner.silinex.work/cloudnative-pg/postgresql:16.9
+  - name: redis
+    component: redis
+    before:
+      - file: redis/values.yaml
+        full: yourRegistry:5000/bitnami/redis:8.2
+        repository: bitnami/redis
+        registry: yourRegistry:5000
+        tag: "8.2"
+      - file: redis/cache-values.yaml
+        full: registry.inner.silinex.work/bitnami/redis:latest
+        repository: bitnami/redis
+        registry: registry.inner.silinex.work
+        tag: latest
+    after:
+      file: redis/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/redis:latest
+      repository: redis
+      tag: latest
+    pushedFrom: registry.inner.silinex.work/bitnami/redis:latest
+    notes:
+      - bitnami/redis:8.2 did not exist in the checked registries, so the chart default now matches cache-values.yaml latest.
+  - name: redis-sentinel
+    component: redis
+    before:
+      - file: redis/values.yaml
+        full: yourRegistry:5000/bitnami/redis-sentinel:latest
+        repository: bitnami/redis-sentinel
+        registry: yourRegistry:5000
+        tag: latest
+    after:
+      file: redis/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/redis-sentinel:latest
+      repository: redis-sentinel
+      tag: latest
+    pushedFrom: docker.io/bitnami/redis-sentinel:latest
+  - name: redis-exporter
+    component: redis
+    before:
+      - file: redis/values.yaml
+        full: yourRegistry:5000/bitnami/redis-exporter:latest
+        repository: bitnami/redis-exporter
+        registry: yourRegistry:5000
+        tag: latest
+      - file: redis/cache-values.yaml
+        full: registry.inner.silinex.work/bitnami/redis-exporter:latest
+        repository: bitnami/redis-exporter
+        registry: registry.inner.silinex.work
+        tag: latest
+    after:
+      file: redis/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/redis-exporter:latest
+      repository: redis-exporter
+      tag: latest
+    pushedFrom: registry.inner.silinex.work/bitnami/redis-exporter:latest
+  - name: os-shell
+    component: redis
+    before:
+      - file: redis/values.yaml
+        full: yourRegistry:5000/bitnami/os-shell:latest
+        repository: bitnami/os-shell
+        registry: yourRegistry:5000
+        tag: latest
+    after:
+      file: redis/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/os-shell:latest
+      repository: os-shell
+      tag: latest
+    pushedFrom: docker.io/bitnami/os-shell:latest
+  - name: kubectl
+    component: redis
+    before:
+      - file: redis/values.yaml
+        full: yourRegistry:5000/bitnami/kubectl:latest
+        repository: bitnami/kubectl
+        registry: yourRegistry:5000
+        tag: latest
+    after:
+      file: redis/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/kubectl:latest
+      repository: kubectl
+      tag: latest
+    pushedFrom: docker.io/bitnami/kubectl:latest
+  - name: nfsplugin
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/nfsplugin:v4.13.2
+        repository: registry.k8s.io/sig-storage/nfsplugin
+        tag: v4.13.2
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/nfsplugin:v4.13.2
+      repository: nfsplugin
+      tag: v4.13.2
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/nfsplugin:v4.13.2
+  - name: csi-provisioner
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+        repository: /sig-storage/csi-provisioner
+        baseRepo: registry.k8s.io
+        tag: v6.1.0
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/csi-provisioner:v6.1.0
+      repository: csi-provisioner
+      tag: v6.1.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+  - name: csi-resizer
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+        repository: /sig-storage/csi-resizer
+        baseRepo: registry.k8s.io
+        tag: v2.0.0
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/csi-resizer:v2.0.0
+      repository: csi-resizer
+      tag: v2.0.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+  - name: csi-snapshotter
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+        repository: /sig-storage/csi-snapshotter
+        baseRepo: registry.k8s.io
+        tag: v8.4.0
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/csi-snapshotter:v8.4.0
+      repository: csi-snapshotter
+      tag: v8.4.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+  - name: livenessprobe
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/livenessprobe:v2.17.0
+        repository: /sig-storage/livenessprobe
+        baseRepo: registry.k8s.io
+        tag: v2.17.0
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/livenessprobe:v2.17.0
+      repository: livenessprobe
+      tag: v2.17.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/livenessprobe:v2.17.0
+  - name: csi-node-driver-registrar
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
+        repository: /sig-storage/csi-node-driver-registrar
+        baseRepo: registry.k8s.io
+        tag: v2.15.0
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/csi-node-driver-registrar:v2.15.0
+      repository: csi-node-driver-registrar
+      tag: v2.15.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
+  - name: snapshot-controller
+    component: csi-driver-nfs
+    before:
+      - file: csi-driver-nfs/csi-driver-nfs/values.yaml
+        full: registry.k8s.io/sig-storage/snapshot-controller:v8.4.0
+        repository: /sig-storage/snapshot-controller
+        baseRepo: registry.k8s.io
+        tag: v8.4.0
+    after:
+      file: csi-driver-nfs/csi-driver-nfs/values.yaml
+      full: registry.inner.silinex.work/silinex-maas/snapshot-controller:v8.4.0
+      repository: snapshot-controller
+      tag: v8.4.0
+    pushedFrom: registry.inner.silinex.work/registry.k8s.io/sig-storage/snapshot-controller:v8.4.0

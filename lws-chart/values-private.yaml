@@ -1,8 +1,11 @@
 # Private registry values for LWS
-# Use private registry as proxy for public registry
+# This chart now uses global.imageRegistry as the image prefix.
+
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
 
 image:
   manager:
-    repository: registry.inner.silinex.work/registry.k8s.io/lws/lws
+    repository: lws
     tag: v0.8.0
     pullPolicy: IfNotPresent

@@ -407,9 +407,6 @@
                                         "image": {
                                             "type": "string"
                                         },
-                                        "registry": {
-                                            "type": "string"
-                                        },
                                         "tag": {
                                             "type": "string"
                                         }
@@ -421,9 +418,6 @@
                                         "image": {
                                             "type": "string"
                                         },
-                                        "registry": {
-                                            "type": "string"
-                                        },
                                         "tag": {
                                             "type": "string"
                                         }
@@ -432,6 +426,10 @@
                             }
                         }
                     }
+                },
+                "imageRegistry": {
+                    "description": "Image registry prefix used for every rendered image.",
+                    "type": "string"
                 },
                 "checkNewVersion": {
                     "type": "boolean"
@@ -877,10 +875,6 @@
             "properties": {
                 "pullPolicy": {
                     "description": "Traefik image pull policy",
-                    "type": "string"
-                },
-                "registry": {
-                    "description": "Traefik image host registry",
                     "type": "string"
                 },
                 "repository": {

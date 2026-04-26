@@ -7,7 +7,7 @@ spec:
   instances: 3
 
   # 1. 镜像配置
-  imageName: registry.inner.silinex.work/cloudnative-pg/postgresql:16.9
+  imageName: registry.inner.silinex.work/silinex-maas/postgresql:16.9
   
   # 2. 存储配置
   storage:

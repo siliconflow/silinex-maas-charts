@@ -4,15 +4,15 @@
 
 # 1. 核心修复：跳过镜像来源验证
 global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
   security:
     allowInsecureImages: true
 
 architecture: replication
 
-# 2. 镜像配置 (注意: 8.2 必须加引号，防止被识别为数字)
+# 2. 镜像配置
 image:
-  registry: registry.inner.silinex.work
-  repository: bitnami/redis
+  repository: redis
   tag: "latest"
   pullPolicy: IfNotPresent
 
@@ -27,8 +27,7 @@ sentinel:
   masterSet: redis-cache-master
   quorum: 2
   image:
-    registry: registry.inner.silinex.work
-    repository: bitnami/redis
+    repository: redis
     tag: "latest"
 
 # 4. Master 节点结构补全
@@ -88,9 +87,8 @@ podSecurityContext:
 metrics:
   enabled: true
   image:
-    registry: registry.inner.silinex.work
-    repository: bitnami/redis-exporter
+    repository: redis-exporter
     tag: "latest"
 
-# 如果你的内网仓库里没有 bitnami/os-shell 等，你可能还需要在 values 里手动指定它们
+# 如果启用 volumePermissions/sysctl/kubectl 等辅助容器，也统一使用 silinex-maas/os-shell、silinex-maas/kubectl。
 # 但通常设置了 global.security.allowInsecureImages 就可以直接跳过检查了

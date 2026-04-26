@@ -17,3 +17,12 @@ labels:
 {{ toYaml .Values.customLabels | indent 2 -}}
   {{- end }}
 {{- end -}}
+
+{{/* Build image from global.imageRegistry and the image repository path. */}}
+{{- define "nfs.image" -}}
+{{- $root := .root -}}
+{{- $image := .image -}}
+{{- $repository := required "image repository is required" $image.repository | trimPrefix "/" -}}
+{{- $registry := required "global.imageRegistry is required" $root.Values.global.imageRegistry | trimSuffix "/" -}}
+{{- printf "%s/%s:%s" $registry $repository $image.tag -}}
+{{- end -}}

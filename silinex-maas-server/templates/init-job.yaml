@@ -46,7 +46,7 @@ spec:
         - name: silinex-maas-server-init
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ include "silinex-maas-server.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.initJob.command }}
           command:

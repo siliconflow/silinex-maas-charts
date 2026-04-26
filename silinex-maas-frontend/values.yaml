@@ -1,7 +1,10 @@
 replicaCount: 1
 
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
 image:
-  repository: registry.inner.silinex.work/silinex-maas/e-maas
+  repository: e-maas
   tag: "amd64-b3a8edba-20260426-1827"
   pullPolicy: IfNotPresent
 
@@ -18,6 +21,7 @@ podSecurityContext: {}
 securityContext: {}
 
 nodeSelector:
+  kubernetes.io/arch: amd64
   kubernetes.io/hostname: dev-vm-120
 tolerations: []
 affinity: {}

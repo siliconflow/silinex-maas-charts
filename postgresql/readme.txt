@@ -48,7 +48,7 @@ Silinex MaaS PostgreSQL
       psql -h 127.0.0.1 -U silinex -d silinex_maas_test -c "SELECT current_database();"
 
     kubectl -n sf-maas run psql-test --rm -it \
-      --image=registry.inner.silinex.work/cloudnative-pg/postgresql:16.9 \
+      --image=registry.inner.silinex.work/silinex-maas/postgresql:16.9 \
       --restart=Never -- \
       psql -h pg-prod-rw -U silinex -d maas_idp_test -c "SELECT current_database();"
 

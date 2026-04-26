@@ -19,8 +19,11 @@
 
 replicaCount: 1
 
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
 image:
-  repository: registry.inner.silinex.work/cloudnative-pg/cloudnative-pg
+  repository: cloudnative-pg
   pullPolicy: IfNotPresent
   # -- Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -162,7 +165,8 @@ resources: {}
   #   memory: 100Mi
 
 # -- Nodeselector for the operator to be installed.
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/arch: amd64
 
 # -- Topology Spread Constraints for the operator to be installed.
 topologySpreadConstraints: []

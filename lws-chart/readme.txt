@@ -11,9 +11,9 @@ LWS (LeaderWorkerSet) 是 Kubernetes SIGs 的一个 API，用于部署一组 Pod
 
     helm install lws ./lws-chart --create-namespace --namespace lws-system
 
-或使用私有仓库配置安装
+或显式覆盖镜像仓库前缀安装
 
-    helm install lws ./lws-chart -f ./lws-chart/values-private.yaml --create-namespace --namespace lws-system
+    helm install lws ./lws-chart --set global.imageRegistry=<customer-registry> --create-namespace --namespace lws-system
 
 验证安装
 
@@ -27,22 +27,24 @@ LWS (LeaderWorkerSet) 是 Kubernetes SIGs 的一个 API，用于部署一组 Pod
 --------
 镜像配置
 
-默认使用公共镜像：
-- 镜像地址：registry.k8s.io/lws/lws
+默认使用内网镜像：
+- 镜像地址：registry.inner.silinex.work/silinex-maas/lws
 - Tag: v0.8.0
 
-如需使用私有仓库，请使用 values-private.yaml：
-    helm install lws ./lws-chart -f ./lws-chart/values-private.yaml
+默认已经使用 `global.imageRegistry: registry.inner.silinex.work/silinex-maas` 作为统一前缀。如需切换客户仓库，直接覆盖该前缀：
 
-私有仓库配置会将镜像地址转换为：
-- 镜像地址：registry.inner.silinex.work/registry.k8s.io/lws/lws
+    helm install lws ./lws-chart --set global.imageRegistry=<customer-registry>/silinex-maas
+
+`values-private.yaml` 保留为兼容入口，效果等同于默认内网前缀：
+- 镜像地址：registry.inner.silinex.work/silinex-maas/lws
 - Tag: v0.8.0
 
 主要配置项
 ----------
 配置项                    默认值                      说明
 replicaCount              1                          副本数量
-image.manager.repository  registry.k8s.io/lws/lws     镜像仓库
+global.imageRegistry      registry.inner.silinex.work/silinex-maas  镜像统一前缀
+image.manager.repository  lws                                      镜像名
 image.manager.tag         v0.8.0                     镜像版本
 service.type              ClusterIP                  服务类型
 service.port              9443                       服务端口

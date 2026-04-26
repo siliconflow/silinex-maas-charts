@@ -18,20 +18,31 @@ Create chart name and version as used by the chart label.
 Create the chart image name.
 */}}
 {{- define "traefik.image-name" -}}
+{{- $registry := required "global.imageRegistry is required" .Values.global.imageRegistry | trimSuffix "/" -}}
 {{- if .Values.oci_meta.enabled -}}
+ {{- $repo := .Values.oci_meta.repo | default "" | trimAll "/" -}}
  {{- if .Values.hub.token -}}
-{{- printf "%s/%s:%s" .Values.oci_meta.repo .Values.oci_meta.images.hub.image .Values.oci_meta.images.hub.tag }}
+  {{- if $repo -}}
+{{- printf "%s/%s/%s:%s" $registry $repo .Values.oci_meta.images.hub.image .Values.oci_meta.images.hub.tag }}
+  {{- else -}}
+{{- printf "%s/%s:%s" $registry (.Values.oci_meta.images.hub.image | trimPrefix "/") .Values.oci_meta.images.hub.tag }}
+  {{- end -}}
  {{- else -}}
-{{- printf "%s/%s:%s" .Values.oci_meta.repo .Values.oci_meta.images.proxy.image .Values.oci_meta.images.proxy.tag }}
+  {{- if $repo -}}
+{{- printf "%s/%s/%s:%s" $registry $repo .Values.oci_meta.images.proxy.image .Values.oci_meta.images.proxy.tag }}
+  {{- else -}}
+{{- printf "%s/%s:%s" $registry (.Values.oci_meta.images.proxy.image | trimPrefix "/") .Values.oci_meta.images.proxy.tag }}
+  {{- end -}}
  {{- end -}}
 {{- else if .Values.global.azure.enabled -}}
  {{- if .Values.hub.token -}}
-{{- printf "%s/%s:%s" .Values.global.azure.images.hub.registry .Values.global.azure.images.hub.image .Values.global.azure.images.hub.tag }}
+{{- printf "%s/%s:%s" $registry (.Values.global.azure.images.hub.image | trimPrefix "/") .Values.global.azure.images.hub.tag }}
  {{- else -}}
-{{- printf "%s/%s:%s" .Values.global.azure.images.proxy.registry .Values.global.azure.images.proxy.image .Values.global.azure.images.proxy.tag }}
+{{- printf "%s/%s:%s" $registry (.Values.global.azure.images.proxy.image | trimPrefix "/") .Values.global.azure.images.proxy.tag }}
  {{- end -}}
 {{- else -}}
-{{- printf "%s/%s:%s" .Values.image.registry .Values.image.repository (.Values.image.tag | default .Chart.AppVersion) }}
+{{- $repository := required "image.repository is required" .Values.image.repository | trimPrefix "/" -}}
+{{- printf "%s/%s:%s" $registry $repository (.Values.image.tag | default .Chart.AppVersion) }}
 {{- end -}}
 {{- end -}}
 

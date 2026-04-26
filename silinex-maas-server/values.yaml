@@ -1,5 +1,8 @@
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
 image:
-  repository: registry.inner.silinex.work/silinex-maas/silinex-maas-server
+  repository: silinex-maas-server
   tag: "amd64-2253a55d-20260427-0136"
   pullPolicy: IfNotPresent
 
@@ -13,6 +16,7 @@ serviceAccount:
 podSecurityContext: {}
 securityContext: {}
 nodeSelector:
+  kubernetes.io/arch: amd64
   kubernetes.io/hostname: dev-vm-120
 tolerations: []
 affinity: {}

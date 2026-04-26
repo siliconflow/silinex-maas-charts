@@ -1,7 +1,10 @@
 replicaCount: 1
 
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
 image:
-  repository: registry.inner.silinex.work/silinex-maas/nginx
+  repository: nginx
   tag: "1.28.3-alpine-perl"
   pullPolicy: IfNotPresent
 
@@ -93,6 +96,7 @@ readinessProbe:
   failureThreshold: 6
 
 nodeSelector:
+  kubernetes.io/arch: amd64
   kubernetes.io/hostname: dev-vm-120
 nodeName: ""
 tolerations: []

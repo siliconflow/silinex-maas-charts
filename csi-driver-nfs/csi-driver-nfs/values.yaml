@@ -1,32 +1,33 @@
 customLabels: {}
+global:
+    imageRegistry: registry.inner.silinex.work/silinex-maas
 image:
-    baseRepo: registry.k8s.io
     nfs:
-        repository: registry.k8s.io/sig-storage/nfsplugin
+        repository: nfsplugin
         tag: v4.13.2
         pullPolicy: IfNotPresent
     csiProvisioner:
-        repository: /sig-storage/csi-provisioner
+        repository: csi-provisioner
         tag: v6.1.0
         pullPolicy: IfNotPresent
     csiResizer:
-        repository: /sig-storage/csi-resizer
+        repository: csi-resizer
         tag: v2.0.0
         pullPolicy: IfNotPresent
     csiSnapshotter:
-        repository: /sig-storage/csi-snapshotter
+        repository: csi-snapshotter
         tag: v8.4.0
         pullPolicy: IfNotPresent
     livenessProbe:
-        repository: /sig-storage/livenessprobe
+        repository: livenessprobe
         tag: v2.17.0
         pullPolicy: IfNotPresent
     nodeDriverRegistrar:
-        repository: /sig-storage/csi-node-driver-registrar
+        repository: csi-node-driver-registrar
         tag: v2.15.0
         pullPolicy: IfNotPresent
     externalSnapshotter:
-        repository: /sig-storage/snapshot-controller
+        repository: snapshot-controller
         tag: v8.4.0
         pullPolicy: IfNotPresent
 
@@ -66,7 +67,8 @@ controller:
   dnsPolicy: ClusterFirstWithHostNet  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
   defaultOnDeletePolicy: delete  # available values: delete, retain
   affinity: {}
-  nodeSelector: {}
+  nodeSelector:
+    kubernetes.io/arch: amd64
   priorityClassName: system-cluster-critical
   tolerations:
     - key: "node-role.kubernetes.io/master"
@@ -130,7 +132,8 @@ node:
   livenessProbe:
     healthPort: 29653
   affinity: {}
-  nodeSelector: {}
+  nodeSelector:
+    kubernetes.io/arch: amd64
   priorityClassName: system-cluster-critical
   tolerations:
     - operator: "Exists"

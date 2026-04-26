@@ -2,6 +2,23 @@
 
 以下命令默认在 `silinex-maas-charts` 目录执行，业务命名空间统一使用 `sf-maas`。
 
+## 镜像仓库前缀
+
+所有 Helm chart 默认使用统一镜像目录 `registry.inner.silinex.work/silinex-maas/<镜像名>:<tag>`。公共镜像和第三方组件也需要先搬运到这个目录，chart 中默认使用统一镜像前缀:
+
+```yaml
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+```
+
+迁移到客户环境时，保持各 chart 内的 `image.repository: <镜像名>` 不变，只需要在安装或升级时统一覆盖前缀，例如:
+
+```bash
+--set global.imageRegistry=<customer-registry>/silinex-maas
+```
+
+镜像按 amd64/x86_64 准备；chart 中可调度的工作负载默认带 `kubernetes.io/arch: amd64` 节点选择，避免 x86 镜像被调度到非 x86 节点。
+
 ## 1. PostgreSQL
 
 先安装 CloudNativePG operator:
