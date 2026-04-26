@@ -1,0 +1,12 @@
+Silinex MaaS nginx HTTPS proxy has been deployed.
+
+Logto app:
+  https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.appHttps }}
+
+Logto admin:
+  https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.adminHttps }}
+
+The Logto chart should use ClusterIP and HTTPS endpoints:
+  --set service.type=ClusterIP
+  --set logto.endpoint=https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.appHttps }}
+  --set logto.adminEndpoint=https://{{ .Values.nginx.serverName }}:{{ .Values.service.nodePorts.adminHttps }}

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "silinex-maas-nginx.fullname" . }}
+  labels:
+    {{- include "silinex-maas-nginx.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: app-https
+      port: {{ .Values.service.ports.appHttps }}
+      targetPort: app-https
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePorts.appHttps }}
+      nodePort: {{ .Values.service.nodePorts.appHttps }}
+      {{- end }}
+    - name: admin-https
+      port: {{ .Values.service.ports.adminHttps }}
+      targetPort: admin-https
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePorts.adminHttps }}
+      nodePort: {{ .Values.service.nodePorts.adminHttps }}
+      {{- end }}
+  selector:
+    {{- include "silinex-maas-nginx.selectorLabels" . | nindent 4 }}

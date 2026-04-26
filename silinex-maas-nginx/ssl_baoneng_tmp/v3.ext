@@ -1,0 +1,12 @@
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = *.siliconflow-aiwork-demo.cn
+DNS.2 = *.siliconflow-aiwork.cn
+IP.1 = 10.83.192.1
+IP.2 = 10.83.192.2
+IP.3 = 10.83.192.3
+IP.4 = 10.83.195.1
+IP.5 = 10.60.30.120
+IP.6 = 10.60.30.11
+

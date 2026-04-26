@@ -1,0 +1,78 @@
+replicaCount: 1
+
+image:
+  repository: registry.inner.silinex.work/silinex-maas/nginx
+  tag: "1.28.3-alpine-perl"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: NodePort
+  ports:
+    appHttps: 31301
+    adminHttps: 31302
+  nodePorts:
+    appHttps: 31301
+    adminHttps: 31302
+
+nginx:
+  serverName: "10.60.30.120"
+  sslProtocols: "TLSv1.2 TLSv1.3"
+  sslCiphers: "HIGH:!aNULL:!MD5"
+  proxyReadTimeout: "300s"
+  proxySendTimeout: "300s"
+  clientMaxBodySize: "50m"
+  containerPorts:
+    appHttps: 31301
+    adminHttps: 31302
+
+upstreams:
+  logtoApp:
+    host: logto
+    port: 16001
+  logtoAdmin:
+    host: logto
+    port: 16002
+
+tls:
+  createSecret: true
+  secretName: ""
+  certFile: ssl_baoneng_tmp/nginx-chain.pem
+  keyFile: ssl_baoneng_tmp/nginx.key
+
+resources: {}
+
+livenessProbe:
+  enabled: true
+  tcpSocket:
+    port: app-https
+  initialDelaySeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  tcpSocket:
+    port: app-https
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+nodeSelector:
+  kubernetes.io/hostname: dev-vm-120
+nodeName: ""
+tolerations: []
+affinity: {}

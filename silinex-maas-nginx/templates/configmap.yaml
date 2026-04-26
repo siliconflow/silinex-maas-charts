@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "silinex-maas-nginx.fullname" . }}
+  labels:
+    {{- include "silinex-maas-nginx.labels" . | nindent 4 }}
+data:
+  default.conf: |
+    upstream logto_app {
+        server {{ .Values.upstreams.logtoApp.host }}:{{ .Values.upstreams.logtoApp.port }};
+    }
+
+    upstream logto_admin {
+        server {{ .Values.upstreams.logtoAdmin.host }}:{{ .Values.upstreams.logtoAdmin.port }};
+    }
+
+    server {
+        listen {{ .Values.nginx.containerPorts.appHttps }} ssl;
+        server_name {{ .Values.nginx.serverName }} _;
+
+        ssl_certificate /etc/nginx/ssl/tls.crt;
+        ssl_certificate_key /etc/nginx/ssl/tls.key;
+        ssl_protocols {{ .Values.nginx.sslProtocols }};
+        ssl_ciphers {{ .Values.nginx.sslCiphers }};
+        ssl_prefer_server_ciphers on;
+
+        client_max_body_size {{ .Values.nginx.clientMaxBodySize }};
+
+        location = /api/swagger.json {
+            return 403;
+        }
+
+        location ~* \.js\.map$ {
+            deny all;
+        }
+
+        location / {
+            proxy_pass http://logto_app;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port {{ .Values.service.nodePorts.appHttps | default .Values.service.ports.appHttps }};
+            proxy_read_timeout {{ .Values.nginx.proxyReadTimeout }};
+            proxy_send_timeout {{ .Values.nginx.proxySendTimeout }};
+        }
+    }
+
+    server {
+        listen {{ .Values.nginx.containerPorts.adminHttps }} ssl;
+        server_name {{ .Values.nginx.serverName }} _;
+
+        ssl_certificate /etc/nginx/ssl/tls.crt;
+        ssl_certificate_key /etc/nginx/ssl/tls.key;
+        ssl_protocols {{ .Values.nginx.sslProtocols }};
+        ssl_ciphers {{ .Values.nginx.sslCiphers }};
+        ssl_prefer_server_ciphers on;
+
+        client_max_body_size {{ .Values.nginx.clientMaxBodySize }};
+
+        location / {
+            proxy_pass http://logto_admin;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Port {{ .Values.service.nodePorts.adminHttps | default .Values.service.ports.adminHttps }};
+            proxy_read_timeout {{ .Values.nginx.proxyReadTimeout }};
+            proxy_send_timeout {{ .Values.nginx.proxySendTimeout }};
+        }
+    }

@@ -21,7 +21,7 @@ podSecurityContext: {}
 securityContext: {}
 
 service:
-  type: NodePort
+  type: ClusterIP
   ports:
     app: 16001
     admin: 16002
@@ -32,8 +32,8 @@ service:
 logto:
   trustProxyHeader: "1"
   nodeTlsRejectUnauthorized: "0"
-  endpoint: "http://10.60.30.120:31301"
-  adminEndpoint: "http://10.60.30.120:31302"
+  endpoint: "https://10.60.30.120:31301"
+  adminEndpoint: "https://10.60.30.120:31302"
   command:
     - sh
     - -c
