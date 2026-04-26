@@ -51,15 +51,18 @@ spec:
                 name: {{ include "silinex-maas-frontend.fullname" . }}
             - secretRef:
                 name: {{ include "silinex-maas-frontend.secretName" . }}
-          {{- with .Values.extraEnv }}
           env:
+            - name: NODE_EXTRA_CA_CERTS
+              value: {{ .Values.config.NODE_EXTRA_CA_CERTS | toString | quote }}
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: {{ .Values.config.NODE_TLS_REJECT_UNAUTHORIZED | toString | quote }}
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
           {{- if .Values.trustedCa.enabled }}
           volumeMounts:
             - name: trusted-ca
               mountPath: {{ .Values.trustedCa.mountPath }}
-              subPath: {{ .Values.trustedCa.secretKey }}
               readOnly: true
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
@@ -77,9 +80,10 @@ spec:
         - name: trusted-ca
           secret:
             secretName: {{ .Values.trustedCa.secretName }}
+            optional: {{ .Values.trustedCa.optional }}
             items:
               - key: {{ .Values.trustedCa.secretKey }}
-                path: {{ .Values.trustedCa.secretKey }}
+                path: {{ .Values.trustedCa.fileName }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

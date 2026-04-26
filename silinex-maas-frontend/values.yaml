@@ -31,7 +31,7 @@ service:
 config:
   NODE_ENV: production
   PORT: "16101"
-  BASE_URL: https://10.60.30.120:31300/silinex
+  BASE_URL: http://silinex-maas-server:16100/silinex
   AUTH_CALLBACK_URL: https://10.60.30.120:31300
   BASE_API_URL: https://api.siliconflow.cn/v1
   AUTH_COOKIE_NAME: silinex-maas
@@ -61,14 +61,16 @@ secrets:
 trustedCa:
   enabled: true
   secretName: silinex-maas-nginx-tls
-  secretKey: tls.crt
-  mountPath: /ssl/nginx-chain.pem
+  secretKey: nginx-chain.pem
+  fileName: nginx-chain.pem
+  mountPath: /ssl
+  optional: true
 
 command:
   - sh
   - -c
 args:
-  - find /app -type f ! -name "*.svg" ! -name "*.ico" ! -name "*.png" -exec sed -i "s|http://placeholder:80/silinex|${BASE_URL}|g" {} + && /app/start.sh
+  - export NODE_EXTRA_CA_CERTS="${NODE_EXTRA_CA_CERTS:-/ssl/nginx-chain.pem}" NODE_TLS_REJECT_UNAUTHORIZED="${NODE_TLS_REJECT_UNAUTHORIZED:-0}" && find /app -type f ! -name "*.svg" ! -name "*.ico" ! -name "*.png" -exec sed -i "s|http://placeholder:80/silinex|${BASE_URL}|g" {} + && exec /app/start.sh
 
 extraEnv: []
 

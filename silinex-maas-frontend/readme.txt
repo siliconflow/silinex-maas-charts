@@ -19,7 +19,7 @@ Silinex MaaS Frontend Helm Chart
 常用覆盖参数
 ------------
 
-    --set config.BASE_URL=https://10.60.30.120:31300/silinex
+    --set config.BASE_URL=http://silinex-maas-server:16100/silinex
     --set config.AUTH_CALLBACK_URL=https://10.60.30.120:31300
     --set config.LOGTO_ENDPOINT=https://10.60.30.120:31301/
     --set config.LOGTO_APP_ID=<logto-app-id>
@@ -28,7 +28,7 @@ Silinex MaaS Frontend Helm Chart
     --set secrets.LOGTO_COOKIE_SECRET=<cookie-secret>
     --set nodeSelector."kubernetes\\.io/hostname"=<k8s-node-name>
 
-默认会挂载 silinex-maas-nginx-tls 里的 tls.crt 到 /ssl/nginx-chain.pem，匹配 NODE_EXTRA_CA_CERTS。
+默认会可选挂载 silinex-maas-nginx-tls 里的 nginx-chain.pem 到 /ssl/nginx-chain.pem，匹配 NODE_EXTRA_CA_CERTS。Secret 不存在时 frontend 仍会启动，不再强依赖 nginx 先安装。
 
 验证
 ----
