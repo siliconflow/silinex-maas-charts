@@ -58,7 +58,7 @@ config:
   enableScheduler: true
   debugEnableFakeLogin: false
   enablePrettyConsole: true
-  modelManagerEndpoint: http://10.191.234.5:31602
+  modelManagerEndpoint: http://silinex-model-downloader:16102
   modelManagerDefaultOrgId: silinex
   shareDataPVName: pv-nfs
   shareDataStorageClassName: nfs-csi

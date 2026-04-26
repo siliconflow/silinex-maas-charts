@@ -1,0 +1,19 @@
+Silinex model downloader has been deployed.
+
+Service:
+  kubectl get svc {{ include "silinex-model-downloader.fullname" . }}
+
+Internal endpoint:
+  http://{{ include "silinex-model-downloader.fullname" . }}:{{ .Values.service.port }}
+
+Storage:
+  type: {{ default "hostPath" .Values.persistence.type }}
+{{- if .Values.persistence.existingClaim }}
+  existingClaim: {{ .Values.persistence.existingClaim }}
+{{- else if eq (default "hostPath" .Values.persistence.type) "hostPath" }}
+  hostPath: {{ .Values.persistence.hostPath.path }}
+{{- else }}
+  server: {{ .Values.persistence.nfs.server }}
+  path: {{ .Values.persistence.nfs.path }}
+{{- end }}
+  mount: {{ .Values.model.basePath }}

@@ -16,6 +16,10 @@ Silinex MaaS Server Helm Chart
 
     helm upgrade --install silinex-maas-server ./silinex-maas-server --create-namespace --namespace maas
 
+如果使用 chart 内的下载管理服务，先安装 silinex-model-downloader，后端默认会连接:
+
+    http://silinex-model-downloader:16102
+
 默认 nodeSelector 使用节点名 dev-vm-120，server Deployment 和 init Job 都会调度到这个节点:
 
     nodeSelector:
@@ -68,7 +72,7 @@ Redis 使用同一个实例时，后端要使用独立 db:
 - redis.mode / redis.sentinelAddrs / redis.sentinelMasterName
 - logto.managementEndpoint / logto.managementAppId / logto.managementAppSecret
 - config.serverSelfHost
-- config.modelManagerEndpoint
+- config.modelManagerEndpoint: 默认 http://silinex-model-downloader:16102
 - initJob.adminUsername / initJob.adminPassword / initJob.autoMigrate
 
 验证

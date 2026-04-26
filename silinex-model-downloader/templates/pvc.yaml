@@ -1,0 +1,17 @@
+{{- $persistenceType := default "hostPath" .Values.persistence.type -}}
+{{- if and .Values.persistence.enabled (eq $persistenceType "nfs") .Values.persistence.createPVC (not .Values.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistence.pvcName }}
+  labels:
+    {{- include "silinex-model-downloader.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+  storageClassName: {{ .Values.persistence.storageClassName | quote }}
+  volumeName: {{ .Values.persistence.pvName | quote }}
+{{- end }}

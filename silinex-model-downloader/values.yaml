@@ -1,0 +1,104 @@
+replicaCount: 1
+
+image:
+  repository: registry.inner.silinex.work/silinex-maas/silinex-model-downloader
+  tag: "amd64-c5ee5dbf-20260426-1903"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+nodeSelector:
+  kubernetes.io/hostname: dev-vm-120
+tolerations: []
+affinity: {}
+hostAliases: []
+
+service:
+  type: ClusterIP
+  port: 16102
+  targetPort: 8000
+  nodePort: ""
+
+database:
+  name: silinex_maas_test
+  url: postgresql://postgres:postgres123@10.60.30.101:17032/silinex_maas_test
+
+authTokens:
+  modelScope: "1"
+  huggingFace: "2"
+
+model:
+  basePath: /data/models
+
+persistence:
+  enabled: true
+  # Storage backend used when existingClaim is empty.
+  # hostPath mounts a path from the selected node directly and avoids kubelet NFS mounts.
+  # nfs creates/uses the static NFS PV/PVC below.
+  type: hostPath
+  existingClaim: ""
+  createPV: true
+  createPVC: true
+  pvName: silinex-model-downloader-nfs
+  pvcName: silinex-model-downloader-models
+  storageClassName: silinex-model-downloader-nfs
+  size: 1Ti
+  accessModes:
+    - ReadWriteMany
+  reclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=3
+    - rw
+    - nolock
+    - soft
+    - tcp
+  hostPath:
+    # Keep this aligned with silinex-maas-server.config.volumeModelHostPath.
+    path: /maasjfs
+    type: Directory
+  nfs:
+    server: 10.191.59.2
+    path: /data-models
+
+config:
+  extraEnv: {}
+
+secrets:
+  create: true
+  name: ""
+  existingSecret: ""
+  extraStringData: {}
+
+extraEnv: []
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+resources: {}
