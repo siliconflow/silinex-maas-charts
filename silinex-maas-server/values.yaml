@@ -12,7 +12,8 @@ serviceAccount:
 
 podSecurityContext: {}
 securityContext: {}
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/hostname: dev-vm-120
 tolerations: []
 affinity: {}
 hostAliases: []
@@ -24,13 +25,13 @@ postgres:
   password: postgres123
   sslmode: disable
   timezone: Asia/Shanghai
-  serverDatabase: silinex_maas
+  serverDatabase: silinex_maas_test
   logtoDatabase: maas_idp_test
   serverDsnOverride: ""
   logtoManagementDsnOverride: ""
 
 redis:
-  mode: single
+  mode: sentinel
   addr: 10.60.30.101:17111
   username: ""
   password: redis123
@@ -39,14 +40,14 @@ redis:
     - 10.60.30.101:17119
     - 10.60.30.102:17119
     - 10.60.30.103:17119
-  sentinelMasterName: ""
+  sentinelMasterName: "silinex-redis"
   sentinelUsername: ""
-  sentinelPassword: redis123
+  sentinelPassword: ""
 
 logto:
   managementEndpoint: http://logto:16001
-  managementAppId: 4moulpb7bk44zowv0o24a
-  managementAppSecret: ZqWEauPAL0ICnbxKAzW8avSvJTtXHYDu
+  managementAppId: m9simpbev42ipoijac8hl
+  managementAppSecret: 6nteZElWEGF44mbc4XGZBsHEvJdBTd0n
 
 config:
   env: dev
