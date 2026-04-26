@@ -1,0 +1,13 @@
+Logto has been deployed.
+
+App endpoint:
+  {{ .Values.logto.endpoint }}
+
+Admin endpoint:
+  {{ .Values.logto.adminEndpoint }}
+
+Check pods:
+  kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}
+
+Install example:
+  helm install {{ .Release.Name }} ./logto

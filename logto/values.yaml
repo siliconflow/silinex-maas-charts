@@ -1,0 +1,84 @@
+replicaCount: 1
+
+image:
+  repository: registry.inner.silinex.work/silinex-maas/logto
+  tag: "1.28.0-amd64"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: NodePort
+  ports:
+    app: 16001
+    admin: 16002
+  nodePorts:
+    app: 31301
+    admin: 31302
+
+logto:
+  trustProxyHeader: "1"
+  nodeTlsRejectUnauthorized: "0"
+  endpoint: "http://10.60.30.120:31301"
+  adminEndpoint: "http://10.60.30.120:31302"
+  command:
+    - sh
+    - -c
+  args:
+    - npm run cli db seed -- --swe && npm start
+  extraEnv: []
+
+secret:
+  create: true
+  name: ""
+  dbUrl: "postgres://postgres:postgres123@10.60.30.101:17032/maas_idp_test"
+  extraStringData: {}
+
+existingSecret:
+  name: ""
+  dbUrlKey: DB_URL
+
+resources: {}
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: app
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: app
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
