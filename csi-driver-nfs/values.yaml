@@ -1,6 +1,6 @@
 customLabels: {}
 global:
-    imageRegistry: registry.inner.silinex.work/silinex-maas
+    imageRegistry: registry.k8s.io/sig-storage
 image:
     nfs:
         repository: nfsplugin
