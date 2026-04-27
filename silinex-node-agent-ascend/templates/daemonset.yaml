@@ -1,0 +1,146 @@
+{{- define "silinex-node-agent-ascend.daemonset" -}}
+{{- $root := .root -}}
+{{- $arch := .arch | default dict -}}
+{{- $archName := .archName | default "" -}}
+{{- $nodeSelector := dict -}}
+{{- $nodeSelector = mergeOverwrite $nodeSelector $root.Values.nodeSelector -}}
+{{- if $archName -}}
+{{- $nodeSelector = mergeOverwrite $nodeSelector (dict "kubernetes.io/arch" (default $archName $arch.nodeSelectorArch)) -}}
+{{- end -}}
+{{- $nodeSelector = mergeOverwrite $nodeSelector (default dict $arch.nodeSelector) -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "silinex-node-agent-ascend.daemonSetName" (dict "root" $root "arch" $archName) }}
+  namespace: {{ include "silinex-node-agent-ascend.namespace" $root }}
+  labels:
+    {{- include "silinex-node-agent-ascend.labels" $root | nindent 4 }}
+    {{- with $archName }}
+    app.kubernetes.io/arch: {{ . | quote }}
+    {{- end }}
+  {{- with $root.Values.daemonset.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "silinex-node-agent-ascend.selectorLabels" (dict "root" $root "arch" $archName) | nindent 6 }}
+  {{- with $root.Values.daemonset.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "silinex-node-agent-ascend.selectorLabels" (dict "root" $root "arch" $archName) | nindent 8 }}
+        {{- with $root.Values.daemonset.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with $root.Values.daemonset.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with $root.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "silinex-node-agent-ascend.serviceAccountName" $root }}
+      {{- with $root.Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      containers:
+        - name: agent
+          image: "{{ include "silinex-node-agent-ascend.image" (dict "root" $root "tag" $arch.tag) }}"
+          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+          {{- with $root.Values.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            {{- with $root.Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with $root.Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          {{- with $root.Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $root.Values.hostPaths }}
+          volumeMounts:
+            {{- range . }}
+            {{- if ne .enabled false }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ if hasKey . "readOnly" }}{{ .readOnly }}{{ else }}true{{ end }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml $root.Values.resources | nindent 12 }}
+      {{- with $root.Values.hostPaths }}
+      volumes:
+        {{- range . }}
+        {{- if ne .enabled false }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .path }}
+            {{- with .type }}
+            type: {{ . | quote }}
+            {{- end }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- with $nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+{{- end -}}
+
+{{- if .Values.daemonset.enabled -}}
+{{- if .Values.architectureSplit.enabled -}}
+{{- range $index, $arch := .Values.architectureSplit.architectures -}}
+{{- $defaultArchName := "" -}}
+{{- if eq $index 0 -}}
+{{- $defaultArchName = "amd64" -}}
+{{- else if eq $index 1 -}}
+{{- $defaultArchName = "arm64" -}}
+{{- end -}}
+{{- $archName := default $defaultArchName $arch.name -}}
+{{- if and $archName (ne $arch.enabled false) }}
+{{ include "silinex-node-agent-ascend.daemonset" (dict "root" $ "arch" $arch "archName" $archName) }}
+---
+{{- end -}}
+{{- end -}}
+{{- else }}
+{{ include "silinex-node-agent-ascend.daemonset" (dict "root" .) }}
+{{- end -}}
+{{- end }}

@@ -1,0 +1,4 @@
+Silinex node agent for Ascend nodes has been deployed.
+
+Check pods:
+  kubectl -n {{ include "silinex-node-agent-ascend.namespace" . }} get pods -l app.kubernetes.io/component=ascend-agent
