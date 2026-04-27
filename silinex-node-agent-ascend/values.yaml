@@ -1,0 +1,101 @@
+nameOverride: silinex-node-agent
+fullnameOverride: silinex-node-agent
+namespaceOverride: ""
+
+global:
+  imageRegistry: registry.inner.silinex.work/silinex-maas
+
+image:
+  repository: silinex-node-agent
+  tag: "arm64-d9b781e6-20260426-1857"
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: silinex-node-agent-sa
+
+rbac:
+  create: true
+  clusterRoleName: silinex-node-annotator
+  clusterRoleBindingName: silinex-node-annotator-binding
+
+daemonset:
+  enabled: true
+  annotations: {}
+  podAnnotations: {}
+  podLabels: {}
+  updateStrategy:
+    type: RollingUpdate
+
+# Keep disabled when image.tag is a multi-arch manifest.
+# Enable this when amd64 and arm64 must use different tags.
+architectureSplit:
+  enabled: false
+  architectures:
+    - name: amd64
+      enabled: true
+      nodeSelectorArch: amd64
+      tag: ""
+      nodeSelector: {}
+    - name: arm64
+      enabled: true
+      nodeSelectorArch: arm64
+      tag: ""
+      nodeSelector: {}
+
+command:
+  - /app/task
+
+env:
+  - name: LD_LIBRARY_PATH
+    value: /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64/common
+
+extraEnv: []
+
+podSecurityContext: {}
+securityContext:
+  privileged: true
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+nodeSelector:
+  kubernetes.io/arch: arm64
+tolerations: []
+affinity: {}
+priorityClassName: ""
+
+hostPaths:
+  - name: ascend-driver
+    path: /usr/local/Ascend/driver
+    mountPath: /usr/local/Ascend/driver
+    readOnly: true
+    type: ""
+  - name: dcmi
+    path: /usr/local/dcmi
+    mountPath: /usr/local/dcmi
+    readOnly: true
+    type: ""
+  - name: npu-smi
+    path: /usr/local/bin/npu-smi
+    mountPath: /usr/local/bin/npu-smi
+    readOnly: true
+    type: ""
+  - name: queue-schedule
+    path: /var/queue_schedule
+    mountPath: /var/queue_schedule
+    readOnly: true
+    type: ""
+  - name: hccn-tool
+    path: /usr/bin/hccn_tool
+    mountPath: /usr/bin/hccn_tool
+    readOnly: true
+    type: ""
